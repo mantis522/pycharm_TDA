@@ -6,7 +6,6 @@ import re
 import pandas as pd
 from nltk.tokenize import sent_tokenize
 
-
 class StanfordNLP:
     def __init__(self, host='http://localhost', port=9000):
         self.nlp = StanfordCoreNLP(host, port=port,
@@ -57,12 +56,12 @@ if __name__ == '__main__':
     train_label = []
     splited_sentence = []
     parsed_sentence = []
+    group_list = []
+    test = []
 
     sNLP = StanfordNLP()
-    text = 'A blog post using Stanford CoreNLP Server. Visit www.khalidalnajjar.com for more details.'
-    parsed_sentence = " ".join(sNLP.parse(text).split())
 
-    with open("C:/Users/ruin/Desktop/data/train_pos_full.json") as json_file:
+    with open("C:/Users/ruin/Desktop/data/train_neg_full.json") as json_file:
         json_data = json.load(json_file)
         train_data = json_data['data']
 
@@ -73,18 +72,41 @@ if __name__ == '__main__':
     df_train_data = pd.DataFrame(train_review, columns=['data'])
     df_train_data['label'] = train_label
 
-    for a in range(20):
-        split_sentence = sent_tokenize(train_review[a])
+
+    for a in df_train_data[9930:9940]['data']:
+        split_sentence = sent_tokenize(a)
         splited_sentence.append(split_sentence)
 
-    for a in splited_sentence:
-        splited_sentence_lst = []
-        parsed_sentence_lst = []
-        #     print(a)
-        splited_sentence_lst = a
-        for b in a:
-            parse1 = " ".join(sNLP.parse(b).split())
-            parse1 = sNLP.change_moji(parse1)
-            parsed_sentence_lst.append(parse1)
-        print(splited_sentence_lst)
-        print(parsed_sentence_lst)
+
+
+    # for a in range(len(train_data)):
+    #     split_sentence = sent_tokenize(train_review[a])
+    #     splited_sentence.append(split_sentence)
+    #
+    with open('tt.json', 'w', encoding='utf-8') as make_file:
+        data = {}
+        count = 0
+
+        for a in splited_sentence:
+            parsed_sentence_lst = []
+
+            for b in a:
+                parse1 = " ".join(sNLP.parse(b).split())
+                parse1 = sNLP.change_moji(parse1)
+                parsed_sentence_lst.append(parse1)
+                data['parsed_sentence'] = parsed_sentence_lst
+            test.append(parsed_sentence_lst)
+            count = count + 1
+            print(count)
+            # per_20 = count % 20
+            # if per_20 == 0:
+            #     print(count)
+
+        data['splited_sentence'] = splited_sentence
+        data['parsed_sentence'] = test
+
+        json.dump(data, make_file, ensure_ascii=False, indent='\t')
+        make_file.close()
+
+
+
