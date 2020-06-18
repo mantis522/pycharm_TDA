@@ -11,7 +11,7 @@ class StanfordNLP:
         self.nlp = StanfordCoreNLP(host, port=port,
                                    timeout=30000)  # , quiet=False, logging_level=logging.DEBUG)
         self.props = {
-            'annotators': 'tokenize,ssplit,pos,lemma,ner,parse,depparse,dcoref,relation',
+            'annotators': 'tokenize,ssplit,pos,parse',
             'pipelineLanguage': 'en',
             'outputFormat': 'json'
         }
@@ -22,14 +22,9 @@ class StanfordNLP:
     def pos(self, sentence):
         return self.nlp.pos_tag(sentence)
 
-    def ner(self, sentence):
-        return self.nlp.ner(sentence)
-
     def parse(self, sentence):
         return self.nlp.parse(sentence)
 
-    def dependency_parse(self, sentence):
-        return self.nlp.dependency_parse(sentence)
 
     def annotate(self, sentence):
         return json.loads(self.nlp.annotate(sentence, properties=self.props))
@@ -61,7 +56,7 @@ if __name__ == '__main__':
 
     sNLP = StanfordNLP()
 
-    with open("C:/Users/ruin/Desktop/data/train_neg_full.json") as json_file:
+    with open("D:/ruin/data/train_neg_full.json") as json_file:
         json_data = json.load(json_file)
         train_data = json_data['data']
 
@@ -73,11 +68,12 @@ if __name__ == '__main__':
     df_train_data['label'] = train_label
 
 
-    for a in df_train_data[9930:9940]['data']:
+    for a in df_train_data[9959:9960]['data']:
         split_sentence = sent_tokenize(a)
         splited_sentence.append(split_sentence)
 
 
+    # print(splited_sentence)
 
     # for a in range(len(train_data)):
     #     split_sentence = sent_tokenize(train_review[a])
