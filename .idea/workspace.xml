@@ -29,7 +29,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/IPython/DeepLearning_class" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -183,6 +183,8 @@
       <workItem from="1590381650810" duration="6750000" />
       <workItem from="1590405033449" duration="3336000" />
       <workItem from="1590541117194" duration="26000" />
+      <workItem from="1590640450170" duration="1382000" />
+      <workItem from="1590977316657" duration="25000" />
     </task>
     <servers />
   </component>
@@ -190,10 +192,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="-1180" y="275" key="FileChooserDialogImpl" timestamp="1590541137847">
+    <state x="-1180" y="275" key="FileChooserDialogImpl" timestamp="1590977338938">
       <screen x="-1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="-1180" y="275" key="FileChooserDialogImpl/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1590541137847" />
+    <state x="-1180" y="275" key="FileChooserDialogImpl/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1590977338938" />
     <state width="591" height="912" key="GridCell.Tab.0.bottom" timestamp="1590541106903">
       <screen x="-1920" y="0" width="1920" height="1040" />
     </state>
