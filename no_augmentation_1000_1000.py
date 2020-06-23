@@ -21,7 +21,7 @@ test_label2 = []
 for a in range(len(test_data2)):
     test_review2.append(test_data2[a]['txt'])
     test_label2.append(test_data2[a]['label'])
-    
+
 import pandas as pd
 
 df_ = pd.DataFrame(test_review2, columns=['data'])
@@ -29,7 +29,7 @@ df_['label'] = test_label2
 
 with open("C:/Users/ruin/IdeaProjects/core-nlp-example/src/main/resources/train_neg.json") as json_file:
     json_data = json.load(json_file)
-    
+
 json_string = json_data["data"]
 
 neg_list = []
