@@ -14,7 +14,7 @@ start = time.time()
 
 nlp = stanfordnlp.Pipeline(processors='tokenize,pos,depparse')
 
-with open("D:/ruin/data/json_data/data_augmentation_neo/neg/test3.json") as json_file:
+with open("C:/Users/ruin/Desktop/data/data_augmentation2/neg/test3.json") as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
