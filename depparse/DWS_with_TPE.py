@@ -16,12 +16,13 @@ def vader_polarity(text):
 ## 2. 이것도 앞뒤로 문장 붙이면서 augmentation 진행할 것
 ## 3. 감성분석해서 삭제한 문장이 원래 극성을 해치지 않으면
 
+nlp = stanfordnlp.Pipeline(processors='tokenize,pos,depparse')
 
 start = time.time()
 
 TPE_list = []
 
-with open("C:/Users/ruin/Desktop/data/json_data/TPE_Pattern/EX_neg.json") as json_file:
+with open("C:/Users/ruin/Desktop/data/json_data/TPE_Pattern/EX_pos.json") as json_file:
 # with open("C:/Users/ruin/Desktop/data/json_data/TPE_Pattern/EX_pos.json") as json_file:
     json_data = json.load(json_file)
 
@@ -29,29 +30,30 @@ with open("C:/Users/ruin/Desktop/data/json_data/TPE_Pattern/EX_neg.json") as jso
     parsed_sentence = json_data['parsed_sentence']
     augmented_sentence = json_data['augmented_text']
 
-# for a in range(len(augmented_sentence)):
-#     for b in range(len(augmented_sentence[a])):
-#         if(str(type(augmented_sentence[a][b]))) == "<class 'str'>":
-#             TPE_list.append(splited_sentence[a])
+index_num = []
 
+for a in range(len(augmented_sentence)):
+    # print(augmented_sentence[a])
+    for b in range(len(augmented_sentence[a])):
+        if augmented_sentence[a][b] != None:
+            index_num.append(a)
+            # print(augmented_sentence[a])
+            # print(a, b)
 
-# remove_dup = list(set(map(tuple, TPE_list)))
-
-
-nlp = stanfordnlp.Pipeline(processors='tokenize,pos,depparse')
+index_num = list(set(index_num))
 sent_list = []
 
-for a in range(len(splited_sentence)):
+for a in index_num:
     data = splited_sentence[a]
 
     for b in range(len(data)):
         word_list = []
 
         list1 = data[:b]
-        list2 = data[b+1:]
+        list2 = data[b + 1:]
         sentence = splited_sentence[a][b]
 
-        doc = nlp(sentence) ## 모든 sentence에 대해 depparse 실행하면서 대상 찾음.
+        doc = nlp(sentence)  ## 모든 sentence에 대해 depparse 실행하면서 대상 찾음.
 
         for i, _ in enumerate(doc.sentences):
             for word in doc.sentences[i].words:
@@ -64,9 +66,9 @@ for a in range(len(splited_sentence)):
             print(str(a + 1) + " 번째 리스트의 " + str(b + 1) + " 번째 문장")
             # print("원래 문장에 대한 감성분석 결과값 : " + str(vader_polarity(sentence)))
 
-            score_original = vader_polarity(sentence) ## 원래 문장에 대한 감성분석 스코어
+            score_original = vader_polarity(sentence)  ## 원래 문장에 대한 감성분석 스코어
 
-            print(word_list) ## 삭제 대상 단어 리스트
+            print(word_list)  ## 삭제 대상 단어 리스트
 
             for c in range(len(word_list)):
                 number = list(combinations(word_list, c + 1))
@@ -78,7 +80,7 @@ for a in range(len(splited_sentence)):
                     result = ' '.join(resultwords)
                     score_remove = vader_polarity(result)
 
-                    if(score_original == score_remove):
+                    if (score_original == score_remove):
                         result_sentence = ' '.join(list1) + " " + result + " " + ' '.join(list2)
                         # print("해당 문장에 대해서만 감성분석 결과값 : " + str(vader_polarity(result)))
                         print(result_sentence)
@@ -95,8 +97,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open("C:/Users/ruin/Desktop/data/json_data/removed_data/test.json", 'w') as outfile:
+with open("C:/Users/ruin/Desktop/data/json_data/removed_data/test_pos.json", 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
-
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
