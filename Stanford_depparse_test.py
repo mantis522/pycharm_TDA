@@ -14,7 +14,7 @@ start = time.time()
 # #          }
 # # nlp = stanfordnlp.Pipeline(**config)
 #
-nlp = stanfordnlp.Pipeline(processors='tokenize,pos,depparse') # This sets up a default neural pipeline in English
+nlp = stanfordnlp.Pipeline(processors='tokenize,pos,remove') # This sets up a default neural pipeline in English
 sentence = "Attack of the Killer Tomatoes could be enjoyed by any 8yearold with a bad sense of humor, so therefore, it does not qualify as a cult film.There is one good actress in the entire thing Sharon Taylor as Lois Fairchild."
 doc = nlp(sentence)
 word_list = []

@@ -4,7 +4,7 @@ import pandas as pd
 train_review = []
 train_label = []
 
-with open("D:/ruin/data/json_data/full_data/train_data_full.json") as json_file:
+with open("C:/Users/ruin/Desktop/data/train_data_full.json") as json_file:
     json_data = json.load(json_file)
 
     train_data = json_data['data']
@@ -22,7 +22,7 @@ with open("D:/ruin/data/json_data/full_data/train_data_full.json") as json_file:
 test_review = []
 test_label = []
 
-with open("D:/ruin/data/json_data/full_data/test_data_full.json") as json_file:
+with open("C:/Users/ruin/Desktop/data/json_data/test_data_full.json") as json_file:
     json_data = json.load(json_file)
 
     test_data = json_data['data']
