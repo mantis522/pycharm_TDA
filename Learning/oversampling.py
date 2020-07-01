@@ -50,7 +50,7 @@ def making_test_df(file_directory):
 origin_train_df = making_origin_df(origin_directory)
 test_df = making_test_df(test_directory)
 
-origin_train_df = pd.concat([origin_train_df] * 30, ignore_index=True)
+origin_train_df = pd.concat([origin_train_df] * 13, ignore_index=True)
 
 review_data = origin_train_df['data'].tolist()
 review_label = origin_train_df['label'].tolist()

@@ -5,6 +5,8 @@ import os
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from itertools import combinations
 
+## 시간 존나 오래 걸림 하지말자
+
 start = time.time()
 
 
@@ -129,8 +131,7 @@ for a in index_num:
                             up_temp = " ".join(up_temp.split())
                             # print("삭제 이후 문장 : " + up_temp)
                             score_remove = vader_polarity(up_temp)
-                            test_list.append(up_temp)
-                            print(test_list)
+                            print("두 개 이상 삭제되는 문장 : "+up_temp)
                             ### 리스트로 넣되, 중복은 파기하는 방식으로 해야되나
 
                             if (score_original == score_remove):
@@ -138,18 +139,25 @@ for a in index_num:
                                 # print("해당 문장에 대해서만 감성분석 결과값 : " + str(vader_polarity(result)))
                                 first_sent_list.append(result_sentence)
 
-                    print('----------------')
-                    # resultwords = [word for word in sentencewords if word.lower() not in t2l]
-                    # result = ' '.join(resultwords)
-                    # print("result : " +result)
-                    # score_remove = vader_polarity(result)
-                    #
-                    # if (score_original == score_remove):
-                    #     result_sentence = ' '.join(list1) + " " + result + " " + ' '.join(list2)
-                    #     # print("해당 문장에 대해서만 감성분석 결과값 : " + str(vader_polarity(result)))
-                    #     print(result_sentence)
-                    #     first_sent_list.append(result_sentence)
+
+                    first_sent_list = list(set(first_sent_list))
+                    # print(first_sent_list)
+                    # print("갯수 검사 : "+ str(len(first_sent_list)))
+#                     for _ in first_sent_list:
+#                         print("중복 검사 : " + _)
 #
-#             sent_list.append(first_sent_list)
+                    print('----------------------')
+# #
+            sent_list.append(first_sent_list)
 # #
 # print(sent_list)
+
+sent_json = {}
+sent_json['removed_sentence'] = []
+sent_json['removed_sentence'].append(sent_list)
+
+with open("C:/Users/ruin/Desktop/data/json_data/removed_data/removed_PP_neg.json", 'w') as outfile:
+    json.dump(sent_json, outfile, indent=4)
+
+
+print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

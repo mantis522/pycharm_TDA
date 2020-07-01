@@ -10,6 +10,10 @@ import numpy as np
 
 RN_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_neg.json"
 RP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_pos.json"
+RPPN_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_PP_neg.json"
+RRPP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_PP_pos.json"
+RSBARN_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SBAR_neg.json"
+RSBARP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SBAR_pos.json"
 origin_directory = "C:/Users/ruin/Desktop/data/json_data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
 
@@ -67,11 +71,20 @@ def making_df(file_directory, label):
     return df
 
 origin_train_df = making_origin_df(origin_directory)
-removed_neg = making_df(RN_directory, 0)
-removed_pos = making_df(RP_directory, 1)
+
+## 이 쪽만 파일 맞게 바꿔주자
+# removed_neg = making_df(RSBARN_directory, 0)
+# removed_pos = making_df(RSBARP_directory, 1)
+
+removed_neg_PP = making_df(RPPN_directory, 0)
+removed_pos_PP = making_df(RRPP_directory, 1)
+
+removed_neg_JJ = making_df(RN_directory, 0)
+removed_pos_JJ = making_df(RP_directory, 1)
+
 test_df = making_test_df(test_directory)
 
-removed_train_df = pd.concat([removed_neg, removed_pos])
+removed_train_df = pd.concat([removed_neg_PP, removed_pos_PP, removed_neg_JJ, removed_pos_JJ])
 removed_train_df = removed_train_df.reset_index(drop=True)
 
 concat_train_df = pd.concat([removed_train_df, origin_train_df])
