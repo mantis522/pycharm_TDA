@@ -11,10 +11,17 @@ from keras import optimizers
 from keras.preprocessing.sequence import pad_sequences
 import numpy as np
 
+
+
 origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
 origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
 origin_directory = "C:/Users/ruin/Desktop/data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
+
+home_origin_dir = "D:/ruin/data/json_data/train_data_full.json"
+home_test_dir = "D:/ruin/data/json_data/test_data_full.json"
+
+
 
 def making_origin_df(file_directory):
     with open(file_directory) as json_file:
@@ -51,10 +58,14 @@ def making_test_df(file_directory):
 
     return df
 
-origin_train_df = making_origin_df(origin_directory)
-test_df = making_test_df(test_directory)
+origin_train_df = making_origin_df(home_origin_dir)
+test_df = making_test_df(home_test_dir)
 
+<<<<<<< HEAD
 origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
+=======
+origin_train_df = pd.concat([origin_train_df] * 44, ignore_index=True)
+>>>>>>> 82c98a14fbacca8114c19e83180ffc1308800cbc
 
 # review_data = origin_train_df['data'].tolist()
 # review_label = origin_train_df['label'].tolist()

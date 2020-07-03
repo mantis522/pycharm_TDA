@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from ax import optimize
 best_parameters, best_values, experiment, model = optimize(
     parameters=[
@@ -18,3 +19,13 @@ best_parameters, best_values, experiment, model = optimize(
     )
 
 print(best_parameters)
+=======
+def changing_dir(dir):
+    dir = dir.replace("\\", "/")
+
+    return dir
+
+test = "C:\Users\ruin\Downloads\EbNJFkkUMAQmYEO.jpeg.jpg"
+
+print(changing_dir(test))
+>>>>>>> 82c98a14fbacca8114c19e83180ffc1308800cbc
