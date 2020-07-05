@@ -61,11 +61,11 @@ def making_test_df(file_directory):
 origin_train_df = making_origin_df(home_origin_dir)
 test_df = making_test_df(home_test_dir)
 
-<<<<<<< HEAD
+
 origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
-=======
-origin_train_df = pd.concat([origin_train_df] * 44, ignore_index=True)
->>>>>>> 82c98a14fbacca8114c19e83180ffc1308800cbc
+
+# origin_train_df = pd.concat([origin_train_df] * 44, ignore_index=True)
+
 
 # review_data = origin_train_df['data'].tolist()
 # review_label = origin_train_df['label'].tolist()
@@ -90,165 +90,183 @@ X_val_seq = tokenizer.texts_to_sequences(X_val)
 l = [len(i) for i in X_train_seq]
 l = np.array(l)
 
+maxlen = 80
+
 print('minimum number of words: {}'.format(l.min()))
 print('median number of words: {}'.format(np.median(l)))
 print('average number of words: {}'.format(l.mean()))
 print('maximum number of words: {}'.format(l.max()))
 
-print(X_train[0])
-print(X_train_seq[0])
 
-def get_keras_model(lstm_units, neurons_dense, dropout_rate, embedding_size, max_text_len):
-    inputs = Input(shape=(max_text_len,))
-    x = Embedding(vocab_size, embedding_size)(inputs)
-    x = LSTM(units=lstm_units)(x)
-    x = Dense(neurons_dense, activation='relu')(x)
-    x = Dropout(dropout_rate)(x)
+X_train = sequence.pad_sequences(X_train, maxlen=maxlen)
+y_train = sequence.pad_sequences(y_train, maxlen=maxlen)
 
-    outputs = Dense(1, activation='sigmoid')(x)
-    model = Model(inputs=inputs, outputs=outputs)
-
-    return model
-
-def keras_cv_score(parameterization, weight=None):
-    max_text_len = parameterization.get('max_text_len')
-
-    keras.backend.clear_session()
-    model = get_keras_model(parameterization.get('lstm_units'),
-                            parameterization.get('neurons_dense'),
-                            parameterization.get('dropout_rate'),
-                            parameterization.get('embedding_size'),
-                            max_text_len)
-
-    learning_rate = parameterization.get('learning_rate')
-    optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
-
-    NUM_EPOCHS = parameterization.get('num_epochs')
-
-    model.compile(optimizer=optimizer,
-                  loss=keras.losses.BinaryCrossentropy(),
-                  metrics=[keras.metrics.AUC()])
-
-    X_train_seq_padded = pad_sequences(X_train_seq, maxlen=max_text_len)
-    X_val_seq_padded = pad_sequences(X_val_seq, maxlen=max_text_len)
-
-    res = model.fit(x=X_train_seq_padded,
-                    y=y_train,
-                    batch_size=parameterization.get('batch_size'),
-                    epochs=NUM_EPOCHS,
-                    validation_data=(X_val_seq_padded, y_val))
-
-    last_score = np.array(res.history['val_auc_1'][-1:])
-    return last_score, 0
-
-parameters=[
-    {
-        "name": "learning_rate",
-        "type": "range",
-        "bounds": [0.0001, 0.5],
-        "log_scale": True,
-    },
-    {
-        "name": "dropout_rate",
-        "type": "range",
-        "bounds": [0.01, 0.5],
-        "log_scale": True,
-    },
-    {
-        "name": "lstm_units",
-        "type": "range",
-        "bounds": [1, 10],
-        "value_type": "int"
-    },
-    {
-        "name": "neurons_dense",
-        "type": "range",
-        "bounds": [1, 300],
-        "value_type": "int"
-    },
-    {
-        "name": "num_epochs",
-        "type": "range",
-        "bounds": [1, 20],
-        "value_type": "int"
-    },
-    {
-        "name": "batch_size",
-        "type": "range",
-        "bounds": [8, 64],
-        "value_type": "int"
-    },
-    {
-        "name": "embedding_size",
-        "type": "range",
-        "bounds": [2, 500],
-        "value_type": "int"
-    },
-    {
-        "name": "max_text_len",
-        "type": "range",
-        "bounds": [10, 800],
-        "value_type": "int"
-    },
-]
-
-from ax.service.ax_client import AxClient
-from ax.utils.notebook.plotting import render, init_notebook_plotting
-
-init_notebook_plotting()
-
-ax_client = AxClient()
-
-ax_client.create_experiment(
-    name="keras_experiment",
-    parameters=parameters,
-    objective_name='keras_cv',
-    minimize=False)
+print(X_train.shape)
+print(y_train.shape)
 
 
-def evaluate(parameters):
-    return {"keras_cv": keras_cv_score(parameters)}
-
-for i in range(2):
-    parameters, trial_index = ax_client.get_next_trial()
-    ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
 
 
-ax_client.get_trials_data_frame().sort_values('trial_index')
 
-best_parameters, values = ax_client.get_best_parameters()
-
-for k in best_parameters.items():
-    print(k)
-
-print()
-
-# the best score achieved.
-means, covariances = values
-print(means)
-
-keras.backend.clear_session()
-
-max_text_len = best_parameters['max_text_len']
-model = get_keras_model(best_parameters['lstm_units'],
-                        best_parameters['neurons_dense'],
-                        best_parameters['dropout_rate'],
-                        best_parameters['embedding_size'],
-                        max_text_len)
-
-optimizers = keras.optimizers.Adam(learning_rate=best_parameters['learning_rate'])
-
-model.compile(optimizers=optimizers,
-              loss=keras.losses.BinaryCrossentropy(),
-              metrics=['accuracy'])
-
-tokenizer0 = Tokenizer(num_words=vocab_size)
-tokenizer0.fit_on_texts(origin_train_df['data'].values)
-X_train_seq0 = tokenizer0.texts_to_sequences(origin_train_df['data'].values)
-X_train_seq0_padded = pad_sequences(X_train_seq0, maxlen=max_text_len)
-y_train0 = origin_train_df['label'].values
-
-model.fit(x=X_train_seq0_padded, y=y_train0, batch_size=best_parameters['batch_size'], epochs=best_parameters['num_epochs'])
+#
+# def get_keras_model(lstm_units, neurons_dense, dropout_rate, embedding_size, max_text_len):
+#     inputs = Input(shape=(max_text_len,))
+#     x = Embedding(vocab_size, embedding_size)(inputs)
+#     x = LSTM(units=lstm_units)(x)
+#     x = Dense(neurons_dense, activation='relu')(x)
+#     x = Dropout(dropout_rate)(x)
+#
+#     outputs = Dense(1, activation='sigmoid')(x)
+#     model = Model(inputs=inputs, outputs=outputs)
+#
+#     return model
+#
+# def keras_cv_score(parameterization, weight=None):
+#     max_text_len = parameterization.get('max_text_len')
+#
+#     keras.backend.clear_session()
+#     model = get_keras_model(parameterization.get('lstm_units'),
+#                             parameterization.get('neurons_dense'),
+#                             parameterization.get('dropout_rate'),
+#                             parameterization.get('embedding_size'),
+#                             max_text_len)
+#
+#     learning_rate = parameterization.get('learning_rate')
+#     optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
+#
+#     NUM_EPOCHS = parameterization.get('num_epochs')
+#
+#     model.compile(optimizer=optimizer,
+#                   loss=keras.losses.BinaryCrossentropy(),
+#                   metrics=[keras.metrics.AUC()])
+#
+#     X_train_seq_padded = pad_sequences(X_train_seq, maxlen=max_text_len)
+#     X_val_seq_padded = pad_sequences(X_val_seq, maxlen=max_text_len)
+#
+#     res = model.fit(x=X_train_seq_padded,
+#                     y=y_train,
+#                     batch_size=parameterization.get('batch_size'),
+#                     epochs=NUM_EPOCHS,
+#                     validation_data=(X_val_seq_padded, y_val))
+#
+#     last_score = np.array(res.history['val_auc_1'][-1:])
+#     return last_score, 0
+#
+# parameters=[
+#     {
+#         "name": "learning_rate",
+#         "type": "range",
+#         "bounds": [0.0001, 0.5],
+#         "log_scale": True,
+#     },
+#     {
+#         "name": "dropout_rate",
+#         "type": "range",
+#         "bounds": [0.01, 0.5],
+#         "log_scale": True,
+#     },
+#     {
+#         "name": "lstm_units",
+#         "type": "range",
+#         "bounds": [1, 10],
+#         "value_type": "int"
+#     },
+#     {
+#         "name": "neurons_dense",
+#         "type": "range",
+#         "bounds": [1, 300],
+#         "value_type": "int"
+#     },
+#     {
+#         "name": "num_epochs",
+#         "type": "range",
+#         "bounds": [1, 20],
+#         "value_type": "int"
+#     },
+#     {
+#         "name": "batch_size",
+#         "type": "range",
+#         "bounds": [8, 64],
+#         "value_type": "int"
+#     },
+#     {
+#         "name": "embedding_size",
+#         "type": "range",
+#         "bounds": [2, 500],
+#         "value_type": "int"
+#     },
+#     {
+#         "name": "max_text_len",
+#         "type": "range",
+#         "bounds": [10, 800],
+#         "value_type": "int"
+#     },
+# ]
+#
+# from ax.service.ax_client import AxClient
+# from ax.utils.notebook.plotting import render, init_notebook_plotting
+#
+# init_notebook_plotting()
+#
+# ax_client = AxClient()
+#
+# ax_client.create_experiment(
+#     name="keras_experiment",
+#     parameters=parameters,
+#     objective_name='keras_cv',
+#     minimize=False)
+#
+#
+# def evaluate(parameters):
+#     return {"keras_cv": keras_cv_score(parameters)}
+#
+# for i in range(2):
+#     parameters, trial_index = ax_client.get_next_trial()
+#     ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
+#
+#
+# ax_client.get_trials_data_frame().sort_values('trial_index')
+#
+# best_parameters, values = ax_client.get_best_parameters()
+#
+# for k in best_parameters.items():
+#     print(k)
+#
+# print()
+#
+# # the best score achieved.
+# means, covariances = values
+# print(means)
+#
+# keras.backend.clear_session()
+#
+# # print("가장 중요한거?" + best_parameters['max_text_len'])
+#
+# max_text_len = best_parameters['max_text_len']
+# model = get_keras_model(best_parameters['lstm_units'],
+#                         best_parameters['neurons_dense'],
+#                         best_parameters['dropout_rate'],
+#                         best_parameters['embedding_size'],
+#                         max_text_len)
+#
+# optimizers = keras.optimizers.Adam(learning_rate=best_parameters['learning_rate'])
+# model = Sequential()
+# optimizers = keras.optimizers.Adam(learning_rate=0.01)
+#
+# model.compile(optimizers=optimizers,
+#               loss=keras.losses.BinaryCrossentropy(),
+#               metrics=['accuracy'],
+#               optimizer=optimizers)
+#
+# tokenizer0 = Tokenizer(num_words=vocab_size)
+# tokenizer0.fit_on_texts(origin_train_df['data'].values)
+# X_train_seq0 = tokenizer0.texts_to_sequences(origin_train_df['data'].values)
+# X_train_seq0_padded = pad_sequences(X_train_seq0, maxlen=max_text_len)
+# # X_train_seq0_padded = pad_sequences(X_train_seq0, maxlen=500)
+# y_train0 = origin_train_df['label'].values
+#
+# model.fit(x=X_train_seq0_padded, y=y_train0, batch_size=best_parameters['batch_size'], epochs=best_parameters['num_epochs'])
+# model.fit(x=X_train_seq0_padded, y=y_train0, batch_size=32, epochs=10, verbose=2)
 
 # # tokenizer = Tokenizer(num_words=max_features, split=' ')
 # # tokenizer.fit_on_texts(review_data)

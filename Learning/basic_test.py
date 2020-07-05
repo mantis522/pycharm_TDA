@@ -1,46 +1,70 @@
-import os
-from operator import itemgetter
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import warnings
-
-warnings.filterwarnings('ignore')
-
-plt.style.use('ggplot')
-
-import tensorflow as tf
-
-from keras import models, regularizers, layers, optimizers, losses, metrics
+from keras.preprocessing import sequence
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.utils import np_utils, to_categorical
-
+from keras.layers import Dense, Embedding
+from keras.layers import LSTM
 from keras.datasets import imdb
+import time
+from matplotlib import pyplot as plt
 
-(train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=10000)
+# Setting the start variable for time measurement
+start_time = time.time()
 
-print("train_data ", train_data.shape)
-print("train_labels ", train_labels.shape)
-print(train_data)
-print("_"*100)
-print("test_data ", test_data.shape)
-print("test_labels ", test_labels.shape)
-print("_"*100)
-print("Maximum value of a word index ")
-print(max([max(sequence) for sequence in train_data]))
-print("Maximum length num words of review in train ")
-print(max([len(sequence) for sequence in train_data]))
+# Variable
+max_features = 5000
+maxlen = 80  # 단어중에 가장 많이 쓰이는 단어중 가장 일반적인 단어 80개로 자르고 나머지는 0으로 ..
+batch_size = 32
 
-# See an actual review in words
-# Reverse from integers to words using the DICTIONARY (given by keras...need to do nothing to create it)
+print('Loading the data...')
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features)
+print(len(x_train), 'train data sequences')
+print(len(x_test), 'test data sequences')
 
-word_index = imdb.get_word_index()
+print(x_train[0])
+print(x_train.shape)
+print(y_train.shape)
+print(x_test.shape)
 
-reverse_word_index = dict(
-[(value, key) for (key, value) in word_index.items()])
+#
+print('Pad sequences (samples x time)')
+x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
+x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
+print('x_train shape:', x_train.shape)
+print('x_test shape:', x_test.shape)
 
-decoded_review = ' '.join(
-[reverse_word_index.get(i - 3, '?') for i in train_data[123]])
-
-print(decoded_review)
+# print('Build model...')
+# model = Sequential()
+# model.add(Embedding(max_features, 128))
+# model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
+# model.add(Dense(1, activation='sigmoid'))
+#
+# # try using different optimizers and different optimizer configs
+# model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+#
+# print('Train...')
+# hist = model.fit(x_train, y_train, validation_data=(x_test, y_test), nb_epoch=2, batch_size=batch_size, verbose=1)
+# score, acc = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=0)
+# print('Test score:', score)
+# print('Test accuracy:', acc)
+#
+# # model visualize
+# fig, loss_ax = plt.subplots()
+# acc_ax = loss_ax.twinx()
+# loss_ax.plot(hist.history['loss'], 'y', label='train loss')
+# loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')
+# acc_ax.plot(hist.history['acc'], 'b', label='train acc')
+# acc_ax.plot(hist.history['val_acc'], 'g', label='val acc')
+# loss_ax.set_xlabel('epoch')
+# loss_ax.set_ylabel('loss')
+# acc_ax.set_ylabel('accuracy')
+# loss_ax.legend(loc='upper left')
+# acc_ax.legend(loc='lower left')
+# plt.show()
+#
+# # using svg visual model
+# from IPython.display import SVG
+# from keras.utils.vis_utils import model_to_dot
+#
+# SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
+#
+# # spent to time
+# print("--- %s seconds ---" % (time.time() - start_time))
