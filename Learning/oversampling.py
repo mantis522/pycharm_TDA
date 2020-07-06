@@ -13,8 +13,8 @@ import numpy as np
 
 
 
-origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
-origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
+# origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
+# origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
 origin_directory = "C:/Users/ruin/Desktop/data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
 
@@ -58,8 +58,8 @@ def making_test_df(file_directory):
 
     return df
 
-origin_train_df = making_origin_df(home_origin_dir)
-test_df = making_test_df(home_test_dir)
+origin_train_df = making_origin_df(origin_directory)
+test_df = making_test_df(test_directory)
 
 
 origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
@@ -97,12 +97,24 @@ print('median number of words: {}'.format(np.median(l)))
 print('average number of words: {}'.format(l.mean()))
 print('maximum number of words: {}'.format(l.max()))
 
+X_train_seq = sequence.pad_sequences(X_train_seq, maxlen=maxlen)
+X_val_seq = sequence.pad_sequences(X_val_seq, maxlen=maxlen)
 
-X_train = sequence.pad_sequences(X_train, maxlen=maxlen)
-y_train = sequence.pad_sequences(y_train, maxlen=maxlen)
-
-print(X_train.shape)
+print(X_train_seq.shape)
+print(X_val_seq.shape)
+print(y_train)
 print(y_train.shape)
+
+
+
+
+
+
+# X_train = sequence.pad_sequences(X_train, maxlen=maxlen)
+# y_train = sequence.pad_sequences(y_train, maxlen=maxlen)
+#
+# print(X_train.shape)
+# print(y_train.shape)
 
 
 
