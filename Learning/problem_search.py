@@ -72,7 +72,7 @@ y_train = origin_train_df['label'].values
 X_val = test_df['data'].values
 y_val = test_df['label'].values
 
-vocab_size = 10000
+vocab_size = 5000
 
 tokenizer = Tokenizer(num_words=vocab_size)
 tokenizer.fit_on_texts(X_train)

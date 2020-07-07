@@ -16,7 +16,7 @@ def vader_polarity(text):
     score = analyser.polarity_scores(text)
     return 1 if score['pos'] > score['neg'] else 0
 
-with open("C:/Users/ruin/Desktop/data/edited_data/py_train_pos_edit_full.json") as json_file:
+with open("C:/Users/ruin/Desktop/data/edited_data/py_train_neg_edit_full.json") as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
@@ -96,5 +96,5 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open("C:/Users/ruin/Desktop/data/json_data/removed_data/test_pos.json", 'w') as outfile:
+with open("C:/Users/ruin/Desktop/data/json_data/removed_data/test_neg.json", 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)

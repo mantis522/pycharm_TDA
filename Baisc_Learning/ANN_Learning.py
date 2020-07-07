@@ -1,11 +1,12 @@
 import json
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, Embedding
+from keras.layers import Dense, LSTM, Embedding, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing import sequence
 import numpy as np
+import keras
 import time
 from matplotlib import pyplot as plt
 
@@ -77,73 +78,82 @@ def making_df(file_directory, label):
     return df
 
 origin_train_df = making_origin_df(origin_directory)
-
-# removed_neg_PP = making_df(RPPN_directory, 0)
-# removed_pos_PP = making_df(RRPP_directory, 1)
-
-RAN = making_df(RAN_dir, 0)
-RAP = making_df(RAP_dir, 1)
-
-# removed_pos_SBAR = making_df(RSBARN_directory, 0)
-# removed_neg_SBAR = making_df(RSBARP_directory, 1)
-#
-# removed_neg_JJ = making_df(RN_directory, 0)
-# removed_pos_JJ = making_df(RP_directory, 1)
-
 test_df = making_test_df(test_directory)
 
-removed_train_df = pd.concat([RAN, RAP])
-removed_train_df = removed_train_df.reset_index(drop=True)
+origin_train_df = pd.concat([origin_train_df] * 10, ignore_index=True)
 
-concat_train_df = pd.concat([removed_train_df, origin_train_df])
-concat_train_df = concat_train_df.reset_index(drop=True)
+x_train = origin_train_df['data'].values
+y_train = origin_train_df['label'].values
 
-# print(concat_train_df)
-X_train = concat_train_df['data'].values
-y_train = concat_train_df['label'].values
-
-X_val = test_df['data'].values
+x_val = test_df['data'].values
 y_val = test_df['label'].values
 
-vocab_size = 5000
+vocab_size = 1000
 
 tokenizer = Tokenizer(num_words=vocab_size)
-tokenizer.fit_on_texts(X_train)
+tokenizer.fit_on_texts(x_train)
+tokenizer.fit_on_texts(x_val)
 
-X_train_seq = tokenizer.texts_to_sequences(X_train)
-X_val_seq = tokenizer.texts_to_sequences(X_val)
+# print(X_train.shape)
+# print(y_train.shape)
 
-l = [len(i) for i in X_train_seq]
-l = np.array(l)
+x_train = tokenizer.texts_to_sequences(x_train)
+x_val = tokenizer.texts_to_sequences(x_val)
 
-maxlen = 80
+print(x_train[0])
+print(y_train[0])
 
-print('minimum number of words: {}'.format(l.min()))
-print('median number of words: {}'.format(np.median(l)))
-print('average number of words: {}'.format(l.mean()))
-print('maximum number of words: {}'.format(l.max()))
+x_train = tokenizer.sequences_to_matrix(x_train, mode='binary')
+x_val = tokenizer.sequences_to_matrix(x_val, mode='binary')
 
-X_train_seq = sequence.pad_sequences(X_train_seq, maxlen=maxlen)
-X_val_seq = sequence.pad_sequences(X_val_seq, maxlen=maxlen)
+print(x_train.shape)
 
-print(X_train_seq.shape)
-print(X_val_seq.shape)
-print(y_train)
+num_classes = 2
+y_train = keras.utils.to_categorical(y_train, num_classes)
+y_val = keras.utils.to_categorical(y_val, num_classes)
+
 print(y_train.shape)
+print(y_val.shape)
 
-print('Build model...')
+# model = Sequential()
+# model.add(Dense(16, activation='relu', input_dim=1000))
+# model.add(Dropout(0.5))
+# model.add(Dense(num_classes, activation='softmax'))
+# model.summary()
+# # TODO: Compile the model using a loss function and an optimizer.
+# model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
 model = Sequential()
-model.add(Embedding(vocab_size, 128))
-model.add(LSTM(64, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Dense(16, kernel_regularizer=keras.regularizers.l2(0.001),
+          activation='relu', input_dim=vocab_size))
+model.add(Dense(16, kernel_regularizer=keras.regularizers.l2(0.001),
+          activation='relu'))
+model.add(Dense(num_classes, activation='sigmoid'))
+model.summary()
 
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(optimizer='adam',
+                 loss='binary_crossentropy',
+                 metrics=['accuracy', 'binary_crossentropy', keras.metrics.Recall(name='recall')])
 
-print('Train...')
-hist = model.fit(X_train_seq, y_train, validation_data=(X_val_seq, y_val), nb_epoch=2, batch_size=64, verbose=1)
-score, acc = model.evaluate(X_val_seq, y_val, batch_size=64, verbose=0)
-print('Test score : ', score)
-print('Test accuracy : ', acc)
+hist = model.fit(x_train, y_train, epochs=15, batch_size=64, validation_data=(x_val, y_val)
+                    ,verbose=2)
+
+# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
+# print("Test score : ", score[1])
+# print("Test Accuracy : ", acc[1])
+
+## 5. Training the model
+# Run the model here. Experiment with different batch_size, and number of epochs!
+# TODO: Run the model. Feel free to experiment with different batch sizes and number of epochs.
+# hist = model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_val, y_val), verbose=2)
+
+## 6. Evaluating the model
+# This will give you the accuracy of the model,
+# as evaluated on the testing set. Can you get something over 85%?
+# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
+#
+# print("Accuracy: ", score)
+# print('Test accuracy : ', acc)
 
 fig, loss_ax = plt.subplots()
 acc_ax = loss_ax.twinx()
