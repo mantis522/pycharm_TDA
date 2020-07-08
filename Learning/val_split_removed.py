@@ -80,80 +80,68 @@ def making_df(file_directory, label):
 origin_train_df = making_origin_df(origin_directory)
 test_df = making_test_df(test_directory)
 
-origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
+# RAN = making_df(RAN_dir, 0)
+# RAP = making_df(RAP_dir, 1)
 
-x_train = origin_train_df['data'].values
-y_train = origin_train_df['label'].values
+removed_pos_SBAR = making_df(RSBARN_directory, 0)
+removed_neg_SBAR = making_df(RSBARP_directory, 1)
 
-x_val = test_df['data'].values
-y_val = test_df['label'].values
+val_df = test_df[:12500]
+test_df = test_df[12500:]
+
+removed_train_df = pd.concat([removed_neg_SBAR, removed_pos_SBAR])
+removed_train_df = removed_train_df.reset_index(drop=True)
+
+concat_train_df = pd.concat([removed_train_df, origin_train_df])
+concat_train_df = concat_train_df.reset_index(drop=True)
+
+x_train = concat_train_df['data'].values
+y_train = concat_train_df['label'].values
+
+x_val = val_df['data'].values
+y_val = val_df['label'].values
+
+x_test = test_df['data'].values
+y_test = test_df['label'].values
 
 vocab_size = 1000
 
 tokenizer = Tokenizer(num_words=vocab_size)
 tokenizer.fit_on_texts(x_train)
+tokenizer.fit_on_texts(x_test)
 tokenizer.fit_on_texts(x_val)
-
-# print(X_train.shape)
-# print(y_train.shape)
 
 x_train = tokenizer.texts_to_sequences(x_train)
 x_val = tokenizer.texts_to_sequences(x_val)
+x_test = tokenizer.texts_to_sequences(x_test)
 
-print(x_train[0])
-print(y_train[0])
+x_train = sequence.pad_sequences(x_train, maxlen=vocab_size)
+x_val = sequence.pad_sequences(x_val, maxlen=vocab_size)
+x_test = sequence.pad_sequences(x_val, maxlen=vocab_size)
 
-x_train = tokenizer.sequences_to_matrix(x_train, mode='binary')
-x_val = tokenizer.sequences_to_matrix(x_val, mode='binary')
-
-print(x_train.shape)
-
-num_classes = 2
-y_train = keras.utils.to_categorical(y_train, num_classes)
-y_val = keras.utils.to_categorical(y_val, num_classes)
-
-print(y_train.shape)
-print(y_val.shape)
-
-# model = Sequential()
-# model.add(Dense(16, activation='relu', input_dim=1000))
-# model.add(Dropout(0.5))
-# model.add(Dense(num_classes, activation='softmax'))
-# model.summary()
-# # TODO: Compile the model using a loss function and an optimizer.
-# model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+x_test = np.array(x_test)
+y_test = np.array(y_test)
+x_val = np.array(x_val)
+y_val = np.array(y_val)
 
 model = Sequential()
-model.add(Dense(16, kernel_regularizer=keras.regularizers.l2(0.001),
-          activation='relu', input_dim=vocab_size))
-model.add(Dense(16, kernel_regularizer=keras.regularizers.l2(0.001),
-          activation='relu'))
-model.add(Dense(num_classes, activation='sigmoid'))
-model.summary()
+model.add(Embedding(5000, 120))
+model.add(LSTM(120))
+model.add(Dense(1, activation='sigmoid'))
 
-model.compile(optimizer='adam',
-                 loss='binary_crossentropy',
-                 metrics=['accuracy', 'binary_crossentropy', keras.metrics.Recall(name='recall')])
+# es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
+# mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
 
-hist = model.fit(x_train, y_train, epochs=15, batch_size=64, validation_data=(x_val, y_val)
-                    ,verbose=2)
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
-# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
-# print("Test score : ", score[1])
-# print("Test Accuracy : ", acc[1])
+hist = model.fit(x_train, y_train, epochs=8, batch_size=64, validation_data=(x_val, y_val)
+                    ,verbose=1)
 
-## 5. Training the model
-# Run the model here. Experiment with different batch_size, and number of epochs!
-# TODO: Run the model. Feel free to experiment with different batch sizes and number of epochs.
-# hist = model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_val, y_val), verbose=2)
+loss_and_metrics = model.evaluate(x_test, y_test, batch_size=64)
 
-## 6. Evaluating the model
-# This will give you the accuracy of the model,
-# as evaluated on the testing set. Can you get something over 85%?
-# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
-#
-# print("Accuracy: ", score)
-# print('Test accuracy : ', acc)
+print('acc : ', loss_and_metrics)
 
 fig, loss_ax = plt.subplots()
 acc_ax = loss_ax.twinx()

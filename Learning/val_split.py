@@ -4,7 +4,6 @@ from keras.models import Sequential
 from keras.layers import Dense, LSTM, Embedding, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
-from keras.preprocessing import sequence
 import numpy as np
 import keras
 import time
@@ -80,48 +79,39 @@ def making_df(file_directory, label):
 origin_train_df = making_origin_df(origin_directory)
 test_df = making_test_df(test_directory)
 
-origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
+origin_train_df = pd.concat([origin_train_df] * 20, ignore_index=True)
+
+val_df = test_df[:10000]
+test_df = test_df[10000:]
 
 x_train = origin_train_df['data'].values
 y_train = origin_train_df['label'].values
 
-x_val = test_df['data'].values
-y_val = test_df['label'].values
+x_val = val_df['data'].values
+y_val = val_df['label'].values
 
-vocab_size = 1000
+x_test = test_df['data'].values
+y_test = test_df['label'].values
+
+vocab_size = 5000
 
 tokenizer = Tokenizer(num_words=vocab_size)
 tokenizer.fit_on_texts(x_train)
+tokenizer.fit_on_texts(x_test)
 tokenizer.fit_on_texts(x_val)
-
-# print(X_train.shape)
-# print(y_train.shape)
 
 x_train = tokenizer.texts_to_sequences(x_train)
 x_val = tokenizer.texts_to_sequences(x_val)
-
-print(x_train[0])
-print(y_train[0])
+x_test = tokenizer.texts_to_sequences(x_test)
 
 x_train = tokenizer.sequences_to_matrix(x_train, mode='binary')
 x_val = tokenizer.sequences_to_matrix(x_val, mode='binary')
-
-print(x_train.shape)
+x_test = tokenizer.sequences_to_matrix(x_test, mode='binary')
 
 num_classes = 2
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_val = keras.utils.to_categorical(y_val, num_classes)
-
-print(y_train.shape)
-print(y_val.shape)
-
-# model = Sequential()
-# model.add(Dense(16, activation='relu', input_dim=1000))
-# model.add(Dropout(0.5))
-# model.add(Dense(num_classes, activation='softmax'))
-# model.summary()
-# # TODO: Compile the model using a loss function and an optimizer.
-# model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 model.add(Dense(16, kernel_regularizer=keras.regularizers.l2(0.001),
@@ -138,22 +128,8 @@ model.compile(optimizer='adam',
 hist = model.fit(x_train, y_train, epochs=15, batch_size=64, validation_data=(x_val, y_val)
                     ,verbose=2)
 
-# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
-# print("Test score : ", score[1])
-# print("Test Accuracy : ", acc[1])
-
-## 5. Training the model
-# Run the model here. Experiment with different batch_size, and number of epochs!
-# TODO: Run the model. Feel free to experiment with different batch sizes and number of epochs.
-# hist = model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_val, y_val), verbose=2)
-
-## 6. Evaluating the model
-# This will give you the accuracy of the model,
-# as evaluated on the testing set. Can you get something over 85%?
-# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
-#
-# print("Accuracy: ", score)
-# print('Test accuracy : ', acc)
+loss_and_metrics = model.evaluate(x_test, y_test, batch_size=64)
+print('acc : ', loss_and_metrics)
 
 fig, loss_ax = plt.subplots()
 acc_ax = loss_ax.twinx()
