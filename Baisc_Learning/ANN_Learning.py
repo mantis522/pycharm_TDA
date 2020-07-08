@@ -21,6 +21,9 @@ RSBARP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SB
 origin_directory = "C:/Users/ruin/Desktop/data/json_data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
 
+home_origin_dir = "D:/ruin/data/json_data/train_data_full.json"
+home_test_dir = "D:/ruin/data/json_data/test_data_full.json"
+
 RAP_dir = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAP.json"
 RAN_dir = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAN.json"
 
@@ -77,10 +80,10 @@ def making_df(file_directory, label):
 
     return df
 
-origin_train_df = making_origin_df(origin_directory)
-test_df = making_test_df(test_directory)
+origin_train_df = making_origin_df(home_origin_dir)
+test_df = making_test_df(home_test_dir)
 
-origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
+origin_train_df = pd.concat([origin_train_df] * 15, ignore_index=True)
 
 x_train = origin_train_df['data'].values
 y_train = origin_train_df['label'].values
@@ -138,9 +141,9 @@ model.compile(optimizer='adam',
 hist = model.fit(x_train, y_train, epochs=15, batch_size=64, validation_data=(x_val, y_val)
                     ,verbose=2)
 
-# score, acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
+acc = model.evaluate(x_val, y_val, batch_size=64, verbose=0)
 # print("Test score : ", score[1])
-# print("Test Accuracy : ", acc[1])
+print("Test Accuracy : ", acc)
 
 ## 5. Training the model
 # Run the model here. Experiment with different batch_size, and number of epochs!
