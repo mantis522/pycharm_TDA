@@ -60,13 +60,13 @@ def making_test_df(file_directory):
 
     return df
 
-origin_train_df = making_origin_df(home_origin_dir)
-test_df = making_test_df(home_test_dir)
+origin_train_df = making_origin_df(origin_directory)
+test_df = making_test_df(test_directory)
 
 val_df = test_df[:12500]
 test_df = test_df[12500:]
 
-origin_train_df = pd.concat([origin_train_df], ignore_index=True)
+origin_train_df = pd.concat([origin_train_df] * 10, ignore_index=True)
 
 x_train = origin_train_df['data'].values
 y_train = origin_train_df['label'].values
