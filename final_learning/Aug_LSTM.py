@@ -24,8 +24,8 @@ RSBARP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SB
 origin_directory = "C:/Users/ruin/Desktop/data/json_data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
 
-home_origin_dir = "D:/ruin/data/json_data/train_data_full.json"
-home_test_dir = "D:/ruin/data/json_data/test_data_full.json"
+home_origin_directory = "D:/ruin/data/json_data/train_data_full.json"
+home_test_directory = "D:/ruin/data/json_data/test_data_full.json"
 home_RN_directory = "D:/ruin/data/json_data/removed_data/removed_neg.json"
 home_RP_directory = "D:/ruin/data/json_data/removed_data/removed_pos.json"
 home_RPPN_directory = "D:/ruin/data/json_data/removed_data/removed_PP_neg.json"
@@ -86,18 +86,18 @@ def making_df(file_directory, label):
 
     return df
 
-removed_pos_SBAR = making_df(RSBARN_directory, 0)
-removed_neg_SBAR = making_df(RSBARP_directory, 1)
+removed_pos_SBAR = making_df(home_RSBARN_directory, 0)
+removed_neg_SBAR = making_df(home_RSBARP_directory, 1)
 
-removed_neg_PP = making_df(RPPN_directory, 0)
-removed_pos_PP = making_df(RRPP_directory, 1)
+removed_neg_PP = making_df(home_RPPN_directory, 0)
+removed_pos_PP = making_df(home_RRPP_directory, 1)
 
-removed_neg_JJ = making_df(RN_directory, 0)
-removed_pos_JJ = making_df(RP_directory, 1)
+removed_neg_JJ = making_df(home_RN_directory, 0)
+removed_pos_JJ = making_df(home_RP_directory, 1)
 
-test_df = making_test_df(test_directory)
+test_df = making_test_df(home_test_directory)
 
-origin_train_df = making_origin_df(origin_directory)
+origin_train_df = making_origin_df(home_origin_directory)
 
 removed_train_df = pd.concat([removed_pos_JJ, removed_neg_JJ, removed_neg_PP, removed_pos_PP])
 removed_train_df = removed_train_df.reset_index(drop=True)
