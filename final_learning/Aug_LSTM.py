@@ -23,6 +23,9 @@ RSBARN_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SB
 RSBARP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SBAR_pos.json"
 origin_directory = "C:/Users/ruin/Desktop/data/json_data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
+RAN = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAN.json"
+RAP = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAP.json"
+
 
 home_origin_directory = "D:/ruin/data/json_data/train_data_full.json"
 home_test_directory = "D:/ruin/data/json_data/test_data_full.json"
@@ -86,20 +89,24 @@ def making_df(file_directory, label):
 
     return df
 
-removed_pos_SBAR = making_df(home_RSBARN_directory, 0)
-removed_neg_SBAR = making_df(home_RSBARP_directory, 1)
+removed_pos_SBAR = making_df(RSBARN_directory, 0)
+removed_neg_SBAR = making_df(RSBARP_directory, 1)
 
-removed_neg_PP = making_df(home_RPPN_directory, 0)
-removed_pos_PP = making_df(home_RRPP_directory, 1)
+removed_neg_PP = making_df(RPPN_directory, 0)
+removed_pos_PP = making_df(RRPP_directory, 1)
 
-removed_neg_JJ = making_df(home_RN_directory, 0)
-removed_pos_JJ = making_df(home_RP_directory, 1)
+removed_neg_JJ = making_df(RN_directory, 0)
+removed_pos_JJ = making_df(RP_directory, 1)
 
-test_df = making_test_df(home_test_directory)
+Lab_RAN = making_df(RAN, 0)
+Lab_RAP = making_df(RAP, 1)
 
-origin_train_df = making_origin_df(home_origin_directory)
+test_df = making_test_df(test_directory)
+test_df = test_df.sample(frac=1).reset_index(drop=True)
 
-removed_train_df = pd.concat([removed_pos_JJ, removed_neg_JJ, removed_neg_PP, removed_pos_PP])
+origin_train_df = making_origin_df(origin_directory)
+
+removed_train_df = pd.concat([Lab_RAN, Lab_RAP])
 removed_train_df = removed_train_df.reset_index(drop=True)
 
 concat_train_df = pd.concat([removed_train_df, origin_train_df])
@@ -150,7 +157,7 @@ mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 print('Train...')
-hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), nb_epoch=5, batch_size=64, verbose=1, callbacks=[es, mc])
+hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), nb_epoch=8, batch_size=64, verbose=1, callbacks=[es, mc])
 score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
 print('Test score : ', score)
 print('Test accuracy : ', acc)
