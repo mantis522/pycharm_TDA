@@ -17,11 +17,11 @@ start_time = time.time()
 
 # origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
 # origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
-origin_directory = "C:/Users/ruin/Desktop/data/train_data_full.json"
-test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
+origin_directory = "D:/data/train_data_full.json"
+test_directory = "D:/data/test_data_full.json"
 
-home_origin_dir = "D:/ruin/data/json_data/train_data_full.json"
-home_test_dir = "D:/ruin/data/json_data/test_data_full.json"
+home_origin_dir = "D:/data/json_data/train_data_full.json"
+home_test_dir = "D:/data/json_data/test_data_full.json"
 
 
 
@@ -67,7 +67,7 @@ test_df = test_df.sample(frac=1).reset_index(drop=True)
 val_df = test_df[:12500]
 test_df = test_df[12500:]
 
-origin_train_df = pd.concat([origin_train_df] * 10, ignore_index=True)
+origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
 
 x_train = origin_train_df['data'].values
 y_train = origin_train_df['label'].values
