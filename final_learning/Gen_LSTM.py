@@ -15,15 +15,53 @@ from matplotlib import pyplot as plt
 
 start_time = time.time()
 
-# origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
-# origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
-origin_directory = "D:/data/train_data_full.json"
-test_directory = "D:/data/test_data_full.json"
+origin_dir = "D:/data/json_data/train_data_full.json"
+test_dir = "D:/data/json_data/test_data_full.json"
+pos_gen_dir = "../reading_json/positive_EX.txt"
+pos_gen_sentence_dir = "../reading_json/positive_EX_sentence.txt"
+neg_gen_dir = "C:/Users/ruin/PycharmProjects/text_generator/neg_generate.txt"
+neg_gen_sentence_dir = "C:/Users/ruin/PycharmProjects/text_generator/neg_sentence.txt"
 
-home_origin_dir = "D:/data/json_data/train_data_full.json"
-home_test_dir = "D:/data/json_data/test_data_full.json"
+def making_augmented_df(file_dir, labels):
+    aug_list = []
+    f = open(file_dir, 'r', encoding='utf-8')
+    data = f.read()
+    data = data.rsplit('\n')
+    for a in range(len(data)):
+        if data[a] != '':
+            aug_list.append(data[a])
+        else:
+            pass
+    f.close()
+
+    aug_list = set(aug_list)
+
+    df_aug = pd.DataFrame(aug_list, columns=['data'])
+    df_aug['label'] = labels
+    df_aug = df_aug.sample(frac=1).reset_index(drop=True)
+    df_aug = df_aug[:3000]
 
 
+    return df_aug
+
+# c = making_augmented_df('C:/Users/ruin/PycharmProjects/text_generator/neg_generate.txt', 0)
+# print(c)
+def making_test_df(file_directory):
+    with open(file_directory) as json_file:
+        json_data = json.load(json_file)
+
+    test_data = json_data['data']
+    test_review = []
+    test_label = []
+
+    for a in range(len(test_data)):
+        test_review.append(test_data[a]['txt'])
+        test_label.append(test_data[a]['label'])
+
+    df = pd.DataFrame(test_review, columns=['data'])
+    df['label'] = test_label
+
+    return df
 
 def making_origin_df(file_directory):
     with open(file_directory) as json_file:
@@ -43,34 +81,22 @@ def making_origin_df(file_directory):
 
     return df_train
 
-def making_test_df(file_directory):
-    with open(file_directory) as json_file:
-        json_data = json.load(json_file)
+pos_generation = making_augmented_df(pos_gen_sentence_dir, 1)
+neg_generation = making_augmented_df(neg_gen_sentence_dir, 0)
 
-    test_data = json_data['data']
-    test_review = []
-    test_label = []
-
-    for a in range(len(test_data)):
-        test_review.append(test_data[a]['txt'])
-        test_label.append(test_data[a]['label'])
-
-    df = pd.DataFrame(test_review, columns=['data'])
-    df['label'] = test_label
-
-    return df
-
-origin_train_df = making_origin_df(origin_directory)
-test_df = making_test_df(test_directory)
+origin_train_df = making_origin_df(origin_dir)
+test_df = making_test_df(test_dir)
 test_df = test_df.sample(frac=1).reset_index(drop=True)
+
+augmented_train_df = pd.concat(([pos_generation, neg_generation])).reset_index(drop=True)
+
+concat_train_df = pd.concat([augmented_train_df, origin_train_df]).reset_index(drop=True)
+
+x_train = concat_train_df['data'].values
+y_train = concat_train_df['label'].values
 
 val_df = test_df[:12500]
 test_df = test_df[12500:]
-
-origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
-
-x_train = origin_train_df['data'].values
-y_train = origin_train_df['label'].values
 
 x_val = val_df['data'].values
 y_val = val_df['label'].values
@@ -88,7 +114,6 @@ x_val = tokenizer.texts_to_sequences(x_val)
 x_test = tokenizer.texts_to_sequences(x_test)
 
 maxlen = 80
-
 
 x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
 x_val = sequence.pad_sequences(x_val, maxlen=maxlen)
@@ -111,29 +136,9 @@ mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 print('Train...')
-hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
+hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), nb_epoch=10, batch_size=64, verbose=2, callbacks=[es, mc])
 score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
 print('Test score : ', score)
 print('Test accuracy : ', acc)
 
-# fig, loss_ax = plt.subplots()
-# acc_ax = loss_ax.twinx()
-# loss_ax.plot(hist.history['loss'], 'y', label='train loss')
-# loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')
-# acc_ax.plot(hist.history['accuracy'], 'b', label='train acc')
-# acc_ax.plot(hist.history['val_accuracy'], 'g', label='val acc')
-# loss_ax.set_xlabel('epoch')
-# loss_ax.set_ylabel('loss')
-# acc_ax.set_ylabel('accuracy')
-# loss_ax.legend(loc='upper left')
-# acc_ax.legend(loc='lower left')
-# plt.show()
-#
-# # using svg visual model
-# from IPython.display import SVG
-# from keras.utils.vis_utils import model_to_dot
-#
-# SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
-
-# spent to time
 print("--- %s seconds ---" % (time.time() - start_time))

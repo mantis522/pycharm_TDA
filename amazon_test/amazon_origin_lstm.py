@@ -15,67 +15,27 @@ from matplotlib import pyplot as plt
 
 start_time = time.time()
 
-# origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
-# origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
-origin_directory = "D:/data/train_data_full.json"
-test_directory = "D:/data/test_data_full.json"
+## label 1은 부정 / 2가 긍정
+data_train = pd.read_csv("D:/data/amazon_review_polarity_csv/train.csv", names=['label', 'title', 'review'])
+data_train.loc[data_train["label"] == 1, "label"] = 0
+data_train.loc[data_train['label'] == 2, "label"] = 1
+data_train.drop(['title'], axis='columns', inplace=True)
 
-home_origin_dir = "D:/data/json_data/train_data_full.json"
-home_test_dir = "D:/data/json_data/test_data_full.json"
+data_test = pd.read_csv("D:/data/amazon_review_polarity_csv/test.csv", names=['label', 'title', 'review'])
+data_test.loc[data_test["label"] == 1, "label"] = 0
+data_test.loc[data_test["label"] == 2, "label"] = 1
+data_test.drop(['title'], axis='columns', inplace=True)
 
+val_df = data_test[:200000]
+test_df = data_test[200000:]
 
+x_train = data_train['review'].values
+y_train = data_train['label'].values
 
-def making_origin_df(file_directory):
-    with open(file_directory) as json_file:
-        json_data = json.load(json_file)
-
-    train_review = []
-    train_label = []
-
-    train_data = json_data['data']
-
-    for a in range(len(train_data)):
-        train_review.append(train_data[a]['txt'])
-        train_label.append(train_data[a]['label'])
-
-    df_train = pd.DataFrame(train_review, columns=['data'])
-    df_train['label'] = train_label
-
-    return df_train
-
-def making_test_df(file_directory):
-    with open(file_directory) as json_file:
-        json_data = json.load(json_file)
-
-    test_data = json_data['data']
-    test_review = []
-    test_label = []
-
-    for a in range(len(test_data)):
-        test_review.append(test_data[a]['txt'])
-        test_label.append(test_data[a]['label'])
-
-    df = pd.DataFrame(test_review, columns=['data'])
-    df['label'] = test_label
-
-    return df
-
-origin_train_df = making_origin_df(origin_directory)
-test_df = making_test_df(test_directory)
-test_df = test_df.sample(frac=1).reset_index(drop=True)
-
-val_df = test_df[:12500]
-test_df = test_df[12500:]
-
-origin_train_df = pd.concat([origin_train_df] * 1, ignore_index=True)
-
-x_train = origin_train_df['data'].values
-y_train = origin_train_df['label'].values
-
-x_val = val_df['data'].values
+x_val = val_df['review'].values
 y_val = val_df['label'].values
 
-x_test = test_df['data'].values
+x_test = test_df['review'].values
 y_test = test_df['label'].values
 
 vocab_size = 5000
