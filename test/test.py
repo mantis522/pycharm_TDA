@@ -1,35 +1,30 @@
 import json
 import pandas as pd
+from keras.models import Sequential
+import keras
+from keras.layers import Dense, LSTM, Embedding, Dropout, Flatten, SpatialDropout1D, Input
+from keras.models import Model
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing import sequence
+from keras import optimizers
+from keras.preprocessing.sequence import pad_sequences
+import numpy as np
 import time
-
+from matplotlib import pyplot as plt
 
 start_time = time.time()
 
-origin_dir = "D:/data/json_data/train_data_full.json"
-test_dir = "D:/data/json_data/test_data_full.json"
-pos_gen_dir = "../reading_json/positive_EX.txt"
-pos_gen_sentence_dir = "../reading_json/positive_EX_sentence.txt"
-neg_gen_dir = "C:/Users/ruin/PycharmProjects/text_generator/neg_generate.txt"
-neg_gen_sentence_dir = "C:/Users/ruin/PycharmProjects/text_generator/neg_sentence.txt"
+## label 1은 부정 / 2가 긍정
+data_train = pd.read_csv("D:/data/amazon_review_polarity_csv/train.csv", names=['label', 'title', 'review'])
+data_train.loc[data_train["label"] == 1, "label"] = 0
+data_train.loc[data_train['label'] == 2, "label"] = 1
+data_train.drop(['title'], axis='columns', inplace=True)
+print(len(data_train))
 
-def making_augmented_df(file_dir, labels):
-    aug_list = []
-    f = open(file_dir, 'r', encoding='utf-8')
-    data = f.read()
-    data = data.rsplit('\n')
-    for a in range(len(data)):
-        if data[a] != '':
-            aug_list.append(data[a])
-        else:
-            pass
-    f.close()
+data_test = pd.read_csv("D:/data/amazon_review_polarity_csv/test.csv", names=['label', 'title', 'review'])
+data_test.loc[data_test["label"] == 1, "label"] = 0
+data_test.loc[data_test["label"] == 2, "label"] = 1
+data_test.drop(['title'], axis='columns', inplace=True)
 
-    aug_list = set(aug_list)
-
-    df_aug = pd.DataFrame(aug_list, columns=['data'])
-    df_aug['label'] = labels
-
-
-    return df_aug
-
-print(making_augmented_df(neg_gen_dir, 0))
+print(len(data_test))

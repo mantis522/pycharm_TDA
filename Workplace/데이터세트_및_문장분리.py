@@ -5,7 +5,7 @@ import re
 from nltk.tokenize import sent_tokenize
 from nltk.parse.stanford import StanfordParser
 from nltk import Tree
-from contractions import CONTRACTION_MAP
+from contractions_py import CONTRACTION_MAP
 import numpy as np
 from sklearn.utils import shuffle
 

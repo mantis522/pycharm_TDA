@@ -25,6 +25,7 @@ origin_directory = "C:/Users/ruin/Desktop/data/json_data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
 RAN = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAN.json"
 RAP = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAP.json"
+## RAN의 All은 TPE가 아니라 모든 데이터에 대해 삭제하는 걸 의미. 딱히 신경 쓸 필요 X
 
 
 home_origin_directory = "D:/ruin/data/json_data/train_data_full.json"
