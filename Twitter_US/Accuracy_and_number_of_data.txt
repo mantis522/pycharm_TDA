@@ -1,0 +1,72 @@
+X_train size: (11712, 25)
+y_train size: (11712, 3)
+X_test size: (1756, 25)
+y_test size: (1756, 3)
+X_val size:  (1172, 25)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7944
+Testing Accuracy:  0.8069
+Testing Accuracy:  0.8030
+
+amod 
+X_train size: (18547, 20)
+y_train size: (18547, 3)
+X_test size: (1756, 20)
+y_test size: (1756, 3)
+X_val size:  (1172, 20)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7864
+
+PP
+X_train size: (30974, 23)
+y_train size: (30974, 3)
+X_test size: (1756, 23)
+y_test size: (1756, 3)
+X_val size:  (1172, 23)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7944
+
+SBAR 
+X_train size: (15099, 22)
+y_train size: (15099, 3)
+X_test size: (1756, 22)
+y_test size: (1756, 3)
+X_val size:  (1172, 22)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7927
+
+SBAR, PP
+X_train size: (34361, 22)
+y_train size: (34361, 3)
+X_test size: (1756, 22)
+y_test size: (1756, 3)
+X_val size:  (1172, 22)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7973
+
+SBAR, PP, amod
+X_train size: (41196, 23)
+y_train size: (41196, 3)
+X_test size: (1756, 23)
+y_test size: (1756, 3)
+X_val size:  (1172, 23)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7916
+
+SBAR, amod
+X_train size: (21934, 20)
+y_train size: (21934, 3)
+X_test size: (1756, 20)
+y_test size: (1756, 3)
+X_val size:  (1172, 20)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7984
+Testing Accuracy:  0.7790
+PP, amod
+X_train size: (37809, 23)
+y_train size: (37809, 3)
+X_test size: (1756, 23)
+y_test size: (1756, 3)
+X_val size:  (1172, 23)
+y_val size:  (1172, 3)
+Testing Accuracy:  0.7938

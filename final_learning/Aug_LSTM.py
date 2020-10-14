@@ -177,10 +177,10 @@ acc_ax.legend(loc='lower left')
 plt.show()
 
 # using svg visual model
-from IPython.display import SVG
-from keras.utils.vis_utils import model_to_dot
-
-SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
-
-# spent to time
-print("--- %s seconds ---" % (time.time() - start_time))
+# from IPython.display import SVG
+# from keras.utils.vis_utils import model_to_dot
+#
+# SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
+#
+# # spent to time
+# print("--- %s seconds ---" % (time.time() - start_time))

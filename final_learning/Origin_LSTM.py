@@ -20,10 +20,8 @@ start_time = time.time()
 origin_directory = "D:/data/train_data_full.json"
 test_directory = "D:/data/test_data_full.json"
 
-home_origin_dir = "D:/data/json_data/train_data_full.json"
-home_test_dir = "D:/data/json_data/test_data_full.json"
-
-
+home_origin_dir = "D:/ruin/data/json_data/train_data_full.json"
+home_test_dir = "D:/ruin/data/json_data/test_data_full.json"
 
 def making_origin_df(file_directory):
     with open(file_directory) as json_file:
@@ -60,8 +58,8 @@ def making_test_df(file_directory):
 
     return df
 
-origin_train_df = making_origin_df(origin_directory)
-test_df = making_test_df(test_directory)
+origin_train_df = making_origin_df(home_origin_dir)
+test_df = making_test_df(home_test_dir)
 test_df = test_df.sample(frac=1).reset_index(drop=True)
 
 val_df = test_df[:12500]
@@ -99,41 +97,41 @@ print(x_val.shape)
 print(y_train)
 print(y_train.shape)
 
-print('Build model...')
-model = Sequential()
-model.add(Embedding(vocab_size, 128))
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(1, activation='sigmoid'))
-
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=2, patience=4)
-mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, save_best_only=True)
-
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-print('Train...')
-hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
-score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
-print('Test score : ', score)
-print('Test accuracy : ', acc)
-
-# fig, loss_ax = plt.subplots()
-# acc_ax = loss_ax.twinx()
-# loss_ax.plot(hist.history['loss'], 'y', label='train loss')
-# loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')
-# acc_ax.plot(hist.history['accuracy'], 'b', label='train acc')
-# acc_ax.plot(hist.history['val_accuracy'], 'g', label='val acc')
-# loss_ax.set_xlabel('epoch')
-# loss_ax.set_ylabel('loss')
-# acc_ax.set_ylabel('accuracy')
-# loss_ax.legend(loc='upper left')
-# acc_ax.legend(loc='lower left')
-# plt.show()
+# print('Build model...')
+# model = Sequential()
+# model.add(Embedding(vocab_size, 128))
+# model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
+# model.add(Dense(1, activation='sigmoid'))
 #
-# # using svg visual model
-# from IPython.display import SVG
-# from keras.utils.vis_utils import model_to_dot
+# es = EarlyStopping(monitor='val_loss', mode='min', verbose=2, patience=4)
+# mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, save_best_only=True)
 #
-# SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
-
-# spent to time
-print("--- %s seconds ---" % (time.time() - start_time))
+# model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+#
+# print('Train...')
+# hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
+# score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
+# print('Test score : ', score)
+# print('Test accuracy : ', acc)
+#
+# # fig, loss_ax = plt.subplots()
+# # acc_ax = loss_ax.twinx()
+# # loss_ax.plot(hist.history['loss'], 'y', label='train loss')
+# # loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')
+# # acc_ax.plot(hist.history['accuracy'], 'b', label='train acc')
+# # acc_ax.plot(hist.history['val_accuracy'], 'g', label='val acc')
+# # loss_ax.set_xlabel('epoch')
+# # loss_ax.set_ylabel('loss')
+# # acc_ax.set_ylabel('accuracy')
+# # loss_ax.legend(loc='upper left')
+# # acc_ax.legend(loc='lower left')
+# # plt.show()
+# #
+# # # using svg visual model
+# # from IPython.display import SVG
+# # from keras.utils.vis_utils import model_to_dot
+# #
+# # SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
+#
+# # spent to time
+# print("--- %s seconds ---" % (time.time() - start_time))

@@ -12,10 +12,13 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, LSTM, GRU, BatchNormalization
 from tensorflow.keras import preprocessing
 from tensorflow.keras.models import load_model
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import math
 
-df = pd.read_csv("D:/data/17_742210_compressed_Tweets.csv/Tweets.csv")
+home_dir = "D:/ruin/data/Twitter_US_Airline/Tweets.csv"
+lab_dir = "D:/data/17_742210_compressed_Tweets.csv/Tweets.csv"
+
+df = pd.read_csv(home_dir)
 df['airline_sentiment'] = df['airline_sentiment'].replace('negative', 0)
 df['airline_sentiment'] = df['airline_sentiment'].replace('neutral', 1)
 df['airline_sentiment'] = df['airline_sentiment'].replace('positive', 2)
@@ -44,13 +47,18 @@ labels = to_categorical(np.asarray(y))
 
 x_train, x_test, y_train, y_test = train_test_split(padded_X, labels, test_size=0.2, random_state=0)
 
+# print(x_train)
+# print(type(x_train))
+
 print('X_train size:', x_train.shape)
 print('y_train size:', y_train.shape)
 print('X_test size:', x_test.shape)
 print('y_test size:', y_test.shape)
 
+print(type(y_train))
+
 embeddings_index = {}
-f = open("D:/data/glove.6B/glove.6B.100d.txt", encoding='utf-8')
+f = open("D:/ruin/data/glove.6B/glove.6B.100d.txt", encoding='utf-8')
 for line in f:
     values = line.split()
     word = values[0]
@@ -81,7 +89,7 @@ model.add(Dense(3, activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 
-hist_1 = model.fit(x_train, y_train, validation_split=0.2, epochs=100, batch_size=64, verbose=2)
+hist_1 = model.fit(x_train, y_train, validation_split=0.2, epochs=100, batch_size=64, verbose=2, callbacks=[es, mc])
 
 print("Accuracy...")
 loss, accuracy = model.evaluate(x_train, y_train, verbose=1)
@@ -90,7 +98,7 @@ loss, accuracy = model.evaluate(x_test, y_test, verbose=1)
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 
 # model.save('sentiment_model.h5')
-
+#
 # def index(word):
 #     if word in t.word_index:
 #         return t.word_index[word]
@@ -110,7 +118,7 @@ print("Testing Accuracy:  {:.4f}".format(accuracy))
 #         return "neutral"
 #     else:
 #         return "positive"
-
+#
 # print(sentiment_classification("I was born in March 5"))
 # print(sentiment_classification("Return the maximum along a given axis."))
 #
