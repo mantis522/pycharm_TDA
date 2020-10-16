@@ -30,6 +30,10 @@ home_removed_SBAR_neg = "D:/ruin/data/Twitter_US_Airline/removed/removed_SBAR_ne
 home_removed_SBAR_neu = "D:/ruin/data/Twitter_US_Airline/removed/removed_SBAR_neu.json"
 home_removed_SBAR_pos = "D:/ruin/data/Twitter_US_Airline/removed/removed_SBAR_pos.json"
 
+test_dir = "D:/data/csv_file/airline_tweet_test.csv"
+train_dir = "D:/data/csv_file/airline_tweet_train.csv"
+glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
+
 def making_df(file_directory, label):
     with open(file_directory) as json_file:
         json_data = json.load(json_file)
@@ -59,8 +63,8 @@ def original_df(file_directory):
 
     return df
 
-original_train_df = original_df(home_train_dir)
-original_test_df = original_df(home_test_dir)
+original_train_df = original_df(train_dir)
+original_test_df = original_df(test_dir)
 
 original_test_df, original_val_df = train_test_split(original_test_df, test_size=0.4, random_state=0)
 
@@ -116,7 +120,7 @@ print('X_val size: ', x_val.shape)
 print('y_val size: ', y_val.shape)
 
 embeddings_index = {}
-f = open("D:/ruin/data/glove.6B/glove.6B.100d.txt", encoding='utf-8')
+f = open(glove_100_dir, encoding='utf-8')
 for line in f:
     values = line.split()
     word = values[0]
