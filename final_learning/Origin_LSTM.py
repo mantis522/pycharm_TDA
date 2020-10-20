@@ -11,14 +11,14 @@ from keras import optimizers
 from keras.preprocessing.sequence import pad_sequences
 import numpy as np
 import time
-from matplotlib import pyplot as plt
+
 
 start_time = time.time()
 
 # origin_neg_directory = "C:/Users/ruin/Desktop/data/json_data/train_neg_full.json"
 # origin_pos_directory = "C:/Users/ruin/Desktop/data/json_data/train_pos_full.json"
-origin_directory = "D:/data/train_data_full.json"
-test_directory = "D:/data/test_data_full.json"
+origin_directory = "D:/data/json_data/train_data_full.json"
+test_directory = "D:/data/json_data/test_data_full.json"
 
 home_origin_dir = "D:/ruin/data/json_data/train_data_full.json"
 home_test_dir = "D:/ruin/data/json_data/test_data_full.json"
@@ -58,8 +58,8 @@ def making_test_df(file_directory):
 
     return df
 
-origin_train_df = making_origin_df(home_origin_dir)
-test_df = making_test_df(home_test_dir)
+origin_train_df = making_origin_df(origin_directory)
+test_df = making_test_df(test_directory)
 test_df = test_df.sample(frac=1).reset_index(drop=True)
 
 val_df = test_df[:12500]
@@ -97,22 +97,22 @@ print(x_val.shape)
 print(y_train)
 print(y_train.shape)
 
-# print('Build model...')
-# model = Sequential()
-# model.add(Embedding(vocab_size, 128))
-# model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-# model.add(Dense(1, activation='sigmoid'))
-#
-# es = EarlyStopping(monitor='val_loss', mode='min', verbose=2, patience=4)
-# mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, save_best_only=True)
-#
-# model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-#
-# print('Train...')
-# hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
-# score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
-# print('Test score : ', score)
-# print('Test accuracy : ', acc)
+print('Build model...')
+model = Sequential()
+model.add(Embedding(vocab_size, 128))
+model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
+model.add(Dense(1, activation='sigmoid'))
+
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=2, patience=4)
+mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, save_best_only=True)
+
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+print('Train...')
+hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
+score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
+print('Test score : ', score)
+print('Test accuracy : ', acc)
 #
 # # fig, loss_ax = plt.subplots()
 # # acc_ax = loss_ax.twinx()

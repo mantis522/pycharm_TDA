@@ -18,7 +18,7 @@ import math
 home_dir = "D:/ruin/data/Twitter_US_Airline/Tweets.csv"
 lab_dir = "D:/data/17_742210_compressed_Tweets.csv/Tweets.csv"
 
-df = pd.read_csv(home_dir)
+df = pd.read_csv(lab_dir)
 df['airline_sentiment'] = df['airline_sentiment'].replace('negative', 0)
 df['airline_sentiment'] = df['airline_sentiment'].replace('neutral', 1)
 df['airline_sentiment'] = df['airline_sentiment'].replace('positive', 2)
@@ -58,7 +58,7 @@ print('y_test size:', y_test.shape)
 print(type(y_train))
 
 embeddings_index = {}
-f = open("D:/ruin/data/glove.6B/glove.6B.100d.txt", encoding='utf-8')
+f = open("D:/data/glove.6B/glove.6B.100d.txt", encoding='utf-8')
 for line in f:
     values = line.split()
     word = values[0]
@@ -89,7 +89,7 @@ model.add(Dense(3, activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 
-hist_1 = model.fit(x_train, y_train, validation_split=0.2, epochs=100, batch_size=64, verbose=2, callbacks=[es, mc])
+hist_1 = model.fit(x_train, y_train, validation_split=0.2, epochs=100, batch_size=64, verbose=1, callbacks=[es, mc])
 
 print("Accuracy...")
 loss, accuracy = model.evaluate(x_train, y_train, verbose=1)
@@ -97,34 +97,34 @@ print("Training Accuracy: {:.4f}".format(accuracy))
 loss, accuracy = model.evaluate(x_test, y_test, verbose=1)
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 
-# model.save('sentiment_model.h5')
-#
-# def index(word):
-#     if word in t.word_index:
-#         return t.word_index[word]
-#     else:
-#         return "0"
-#
-# def sequences(words):
-#     words = text_to_word_sequence(words)
-#     seqs = [[index(word) for word in words if word != "0"]]
-#     return preprocessing.sequence.pad_sequences(seqs, maxlen=maxlen)
-#
-# def sentiment_classification(text):
-#     text = sequences(text)
-#     if max((model.predict(text))[0]) == model.predict(text)[0][0]:
-#         return "negative"
-#     elif max((model.predict(text))[0]) == model.predict(text)[0][1]:
-#         return "neutral"
-#     else:
-#         return "positive"
-#
-# print(sentiment_classification("I was born in March 5"))
-# print(sentiment_classification("Return the maximum along a given axis."))
-#
-# neutral_seq = sequences("I was so excited to see it.")
-# neutral_seq2 = sequences("I think it's a lot of things.")
-# print(model.predict(neutral_seq))
-# print(model.predict(neutral_seq2))
+model.save('sentiment_model.h5')
+
+def index(word):
+    if word in t.word_index:
+        return t.word_index[word]
+    else:
+        return "0"
+
+def sequences(words):
+    words = text_to_word_sequence(words)
+    seqs = [[index(word) for word in words if word != "0"]]
+    return preprocessing.sequence.pad_sequences(seqs, maxlen=maxlen)
+
+def sentiment_classification(text):
+    text = sequences(text)
+    if max((model.predict(text))[0]) == model.predict(text)[0][0]:
+        return "negative"
+    elif max((model.predict(text))[0]) == model.predict(text)[0][1]:
+        return "neutral"
+    else:
+        return "positive"
+
+print(sentiment_classification("I was born in March 5"))
+print(sentiment_classification("Return the maximum along a given axis."))
+
+neutral_seq = sequences("I was so excited to see it.")
+neutral_seq2 = sequences("I think it's a lot of things.")
+print(model.predict(neutral_seq))
+print(model.predict(neutral_seq2))
 
 

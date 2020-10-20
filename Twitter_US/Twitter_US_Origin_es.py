@@ -151,7 +151,7 @@ model.add(Dense(3, activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 
-hist_1 = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=100, batch_size=64, verbose=2, callbacks=[es, mc])
+hist_1 = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=100, batch_size=64, verbose=1, callbacks=[es, mc])
 
 print("Accuracy...")
 loss, accuracy = model.evaluate(x_train, y_train, verbose=1)
