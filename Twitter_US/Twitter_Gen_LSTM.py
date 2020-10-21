@@ -63,6 +63,10 @@ pos_generation = making_augmented_df(pos_gen_sentence_dir, 2)
 neg_generation = making_augmented_df(neg_gen_sentence_dir, 0)
 neu_generation = making_augmented_df(neu_gen_sentence_dir, 1)
 
+print(len(pos_generation))
+print(len(neu_generation))
+print(len(neg_generation))
+
 original_train_df = original_df(origin_dir)
 original_test_df = original_df(test_dir)
 
@@ -92,6 +96,7 @@ padded_X = pad_sequences(sequences, padding='post', maxlen=maxlen)
 origin_train_df = original_df(origin_dir)
 
 augmented_train_df = pd.concat(([pos_generation, neg_generation, neu_generation])).reset_index(drop=True)
+print(len(augmented_train_df))
 concat_train_df = pd.concat(([augmented_train_df, origin_train_df])).reset_index(drop=True)
 
 print(concat_train_df)
