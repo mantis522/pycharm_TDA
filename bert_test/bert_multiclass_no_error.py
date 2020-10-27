@@ -30,11 +30,11 @@ from keras_bert import load_trained_model_from_checkpoint
 
 os.environ['TF_KERAS'] = '1'
 
-dataset = tf.keras.utils.get_file(
-    fname="20news-18828.tar.gz",
-    origin="http://qwone.com/~jason/20Newsgroups/20news-18828.tar.gz",
-    extract=True,
-)
+# dataset = tf.keras.utils.get_file(
+#     fname="20news-18828.tar.gz",
+#     origin="http://qwone.com/~jason/20Newsgroups/20news-18828.tar.gz",
+#     extract=True,
+# )
 
 # Bert Model Constants
 SEQ_LEN = 128
@@ -86,7 +86,7 @@ def load_data(path, tagset):
     return [indices, np.zeros_like(indices)], np.array(labels)
 
 
-path = os.path.join(os.path.dirname(dataset), '20news-18828')
+path = "D:/data/20news-18828"
 tagset = [(x, i) for i, x in enumerate(os.listdir(path))]
 id_to_labels = {id_: label for label, id_ in tagset}
 
