@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import json
-import matplotlib.pyplot as plt
 import os
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
@@ -29,6 +28,16 @@ home_removed_PP_pos = "D:/ruin/data/Twitter_US_Airline/removed/removed_PP_pos.js
 home_removed_SBAR_neg = "D:/ruin/data/Twitter_US_Airline/removed/removed_SBAR_neg.json"
 home_removed_SBAR_neu = "D:/ruin/data/Twitter_US_Airline/removed/removed_SBAR_neu.json"
 home_removed_SBAR_pos = "D:/ruin/data/Twitter_US_Airline/removed/removed_SBAR_pos.json"
+
+removed_amod_neg = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_amod_neg.json"
+removed_amod_neu = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_amod_neu.json"
+removed_amod_pos = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_amod_pos.json"
+removed_PP_neg = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_PP_neg.json"
+removed_PP_neu = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_PP_neu.json"
+removed_PP_pos = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_PP_pos.json"
+removed_SBAR_neg = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_SBAR_neg.json"
+removed_SBAR_neu = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_SBAR_neu.json"
+removed_SBAR_pos = "D:/data/json_data/removed_data/Twitter_US_Airline/removed_SBAR_pos.json"
 
 def making_df(file_directory, label):
     with open(file_directory) as json_file:
