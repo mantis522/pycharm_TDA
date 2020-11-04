@@ -15,9 +15,9 @@ def split_df(label, number):
     review_list = []
     label_list = []
     for a in range(len(data_test)):
-        if data_train['label'][a] == label:
-            label_list.append(data_train['label'][a])
-            review_list.append(data_train['review'][a])
+        if data_test['label'][a] == label:
+            label_list.append(data_test['label'][a])
+            review_list.append(data_test['review'][a])
         if len(review_list) == number:
             break
     df = pd.DataFrame()
