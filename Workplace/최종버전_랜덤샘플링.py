@@ -434,7 +434,7 @@ model.add(LSTM(120))
 model.add(Dense(1, activation='sigmoid'))
 
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint('../best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
+mc = ModelCheckpoint('../etc/best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=10, batch_size=64, callbacks=[es, mc])

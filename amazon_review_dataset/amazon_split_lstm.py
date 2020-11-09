@@ -18,7 +18,7 @@ import math
 from matplotlib import pyplot as plt
 
 train_dir = "D:/data/csv_file/amazon/amazon_1000.csv"
-test_dir = "D:/data/csv_file/amazon/amazon_test.csv"
+test_dir = "D:/data/csv_file/amazon/amazon_review_dataset.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 
 original_train_df = pd.read_csv(train_dir)

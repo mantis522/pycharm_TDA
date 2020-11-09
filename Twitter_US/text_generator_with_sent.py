@@ -16,7 +16,7 @@ import time
 from nltk.tokenize import sent_tokenize
 from tqdm import tqdm
 
-df = pd.read_csv("D:/data/17_742210_compressed_Tweets.csv/Tweets.csv")
+df = pd.read_csv("Tweets.csv")
 df['airline_sentiment'] = df['airline_sentiment'].replace('negative', 0)
 df['airline_sentiment'] = df['airline_sentiment'].replace('neutral', 1)
 df['airline_sentiment'] = df['airline_sentiment'].replace('positive', 2)
@@ -51,7 +51,13 @@ labels = to_categorical(np.asarray(y))
 
 x_train, x_test, y_train, y_test = train_test_split(padded_X, labels, test_size=0.2, random_state=0)
 
-model = load_model("/etc/sentiment_model.h5")
+print('X_train size:', x_train.shape)
+print('y_train size:', y_train.shape)
+print('X_test size:', x_test.shape)
+print('y_test size:', y_test.shape)
+
+model = load_model('sentiment_model.h5')
+
 
 def index(word):
     if word in t.word_index:
@@ -82,46 +88,37 @@ def about_symbol(text):
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 model_gpt = TFGPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
 
+with open("train_pos_edit_full.json", encoding='utf-8') as json_file:
+    json_data = json.load(json_file)
+    json_string = json_data['splited_sentence']
+
 seq_length = 1000
 start = time.time()
 
 text_list = []
 output_list= []
 
-with open("D:/data/data/EX_pos.json") as json_file:
-    json_data = json.load(json_file)
-    # print(json_data['augmented_text'])
-    # print(len(json_data['augmented_text']))
-    splited_sentence = json_data['splited_sentence']
-    parsed_sentence = json_data['parsed_sentence']
-    augmented_sentence = json_data['augmented_text']
-
-index_num = []
-
-for a in range(len(augmented_sentence)):
-    for b in range(len(augmented_sentence[a])):
-        if augmented_sentence[a][b] != None:
-            index_num.append(a)
-
-index_num = list(set(index_num))
-
-for a in tqdm(index_num):
-    data = splited_sentence[a]
-    for b in range(len(splited_sentence[a])):
-        input_text = splited_sentence[a][b]
-        poham_input = splited_sentence[a][:b+1]
-        after_input = splited_sentence[a][b+1:]
+for a in tqdm(range(len(json_string))):
+    # print("-" * 100)
+    for b in range(len(json_string[a])):
+        input_text = json_string[a][b]
+        # before_input = json_string[a][:b]
+        poham_input = json_string[a][:b+1]
+        after_input = json_string[a][b+1:]
+        # print(' '.join(before_input) + " " + input_text + " " + ' '.join(after_input))
         input_ids = tokenizer.encode(input_text, return_tensors='tf')
         cur_len = shape_list(input_ids)[1]
         greedy_output = model_gpt.generate(input_ids, max_length=cur_len + 35)
         output_text = tokenizer.decode(greedy_output[0], skip_special_tokens=True)
         output_text = " ".join(output_text.split())
         output_text = about_symbol(output_text)
+        # print("오리지널 + 생성 : " + output_text)
         try:
             output_text = sent_tokenize(output_text)[1]
         except IndexError:
             pass
-
+        # print("생성된 문장만 : " + output_text)
+        # print("생성된 문장 감성분석 : "+sentiment_classification(output_text))
         if sentiment_classification(output_text) == 'positive':
             sum_text = ' '.join(poham_input) + " " + output_text + " " + ' '.join(after_input)
             text_list.append(sum_text)
@@ -131,17 +128,36 @@ for a in tqdm(index_num):
             output_text = ''
             text_list.append(sum_text)
             output_list.append(output_text)
+        # print("-" * 30)
 
-f = open("positive_EX.txt", 'w', encoding='utf-8')
+f = open("pos_generate.txt", 'w', encoding='utf-8')
 for i in range(len(text_list)):
     data = text_list[i] + "\n"
     f.write(data)
 f.close()
 
-g = open("positive_EX_sentence.txt", 'w', encoding='utf-8')
+g = open("pos_sentence.txt", 'w', encoding='utf-8')
 for i in range(len(output_list)):
     data = output_list[i] + "\n"
     g.write(data)
 g.close()
+
+# text = "This is a good, dark film that I highly recommend."
+# text_word_len = len(text.split())
+# input_ids = tokenizer.encode(text, return_tensors='tf')
+# greedy_output = model_gpt.generate(input_ids, max_length=text_word_len+50)
+# output_text = tokenizer.decode(greedy_output[0], skip_special_tokens=True)
+# output_text = " ".join(output_text.split())
+# print(output_text)
+# sent_text = sent_tokenize(output_text)[1]
+#
+# print(sentiment_classification(sent_text))
+#
+# if sentiment_classification(sent_text) == 'positive':
+#     print("이건 긍정입니다.")
+# else:
+#     print("긍정이 아닙니다.")
+
+
 
 print("time : ", time.time() - start)

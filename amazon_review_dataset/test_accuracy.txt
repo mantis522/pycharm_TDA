@@ -1,0 +1,27 @@
+1000개 
+Testing Accuracy:  0.7190
+Testing Accuracy:  0.7166
+
+2000개
+Testing Accuracy:  0.7459
+Testing Accuracy:  0.7541
+
+5000
+Testing Accuracy:  0.7948
+Testing Accuracy:  0.8041
+
+10,000
+Testing Accuracy:  0.8387
+Testing Accuracy:  0.8359
+
+25,000
+Testing Accuracy:  0.8657
+Testing Accuracy:  0.8700
+
+50,000
+Testing Accuracy:  0.8804
+Testing Accuracy:  0.8794
+
+100,000개
+Testing Accuracy:  0.8959
+Testing Accuracy:  0.8937

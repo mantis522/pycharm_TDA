@@ -2,12 +2,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os
 import pandas as pd
 import re
-from nltk.tokenize import sent_tokenize
 from nltk.parse.stanford import StanfordParser
-from nltk import Tree
-from contractions_py import CONTRACTION_MAP
-import numpy as np
-from sklearn.utils import shuffle
+from etc.contractions_py import CONTRACTION_MAP
 
 # os.environ['CLASSPATH'] = "C:/Users/ruin/Desktop/data/stanford-parser-full-2018-10-17"
 os.environ['CLASSPATH'] = '/Users/ruin/Desktop/data/stanford-parser-full-2018-10-17'

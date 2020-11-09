@@ -32,4 +32,4 @@ pos_df = split_df(1, 12500)
 concat_train_df = pd.concat([neg_df, pos_df]).reset_index(drop=True)
 print(len(concat_train_df))
 
-concat_train_df.to_csv("D:/data/csv_file/amazon/amazon_test.csv", index=False)
+concat_train_df.to_csv("D:/data/csv_file/amazon/amazon_review_dataset.csv", index=False)
