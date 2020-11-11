@@ -8,6 +8,7 @@ from tensorflow.keras.layers import Embedding
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras import backend as K
 from keras.preprocessing import sequence
 import time
 
@@ -15,8 +16,9 @@ import time
 ## 그래서 새로 만들었는데 원래 코드하고 호환되는지 확인하기 귀찮아서 renew 코드 새로 만들었다.
 
 start_time = time.time()
+K.clear_session()
 
-train_dir = r"D:\data\csv_file\amazon_len_renew\amazon_50000_renew.csv"
+train_dir = r"D:\data\csv_file\amazon_len_renew\amazon_10000_renew.csv"
 test_dir = r"D:\data\csv_file\amazon_len_renew\amazon_test.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 

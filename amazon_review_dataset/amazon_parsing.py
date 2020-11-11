@@ -9,14 +9,15 @@ import stanfordnlp
 
 start = time.time()
 
-dir_name = "D:/data/json_data/parsed_data/amazon_data/amazon_2000_parsed_pos.json"
+dir_name_pos = "D:/data/json_data/parsed_data/amazon_data/amazon_100000_parsed_pos.json"
+dir_name_neg = "D:/data/json_data/parsed_data/amazon_data/amazon_100000_parsed_neg.json"
 
 def making_parsed_tree(sentiment_code, file_name):
     splited_sentence_first = []
     parsed_sentence_first = []
 
     pcn = StanfordCoreNLP('http://localhost:9000')
-    df_amazon = pd.read_csv("D:/data/csv_file/amazon/amazon_2000.csv")
+    df_amazon = pd.read_csv("D:/data/csv_file/amazon/amazon_100000.csv")
 
     nlp = stanfordnlp.Pipeline(processors='tokenize', lang='en')
     text = df_amazon['review']
@@ -71,6 +72,7 @@ def making_parsed_tree(sentiment_code, file_name):
     with open(file_name, 'w') as out_file:
         json.dump(sent_json, out_file, indent=4)
 
-making_parsed_tree(1, dir_name)
+making_parsed_tree(1, dir_name_pos)
+making_parsed_tree(0, dir_name_neg)
 
 print("time :", time.time() - start)

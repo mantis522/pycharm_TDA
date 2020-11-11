@@ -1,21 +1,15 @@
 import pandas as pd
 import numpy as np
 import json
-import os
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.text import text_to_word_sequence
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Embedding
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, LSTM, GRU, BatchNormalization
-from tensorflow.keras import preprocessing
-from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import Dense, Flatten, LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing import sequence
-import math
-from matplotlib import pyplot as plt
 
 train_dir = "D:/data/csv_file/amazon/amazon_100000.csv"
 test_dir = "D:/data/csv_file/amazon/amazon_test.csv"

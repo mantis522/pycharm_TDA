@@ -80,7 +80,7 @@ for a in index_num:
         sentence = splited_sentence[a][b]
         parsed = parsed_sentence[a][b]
         try:
-            word_list = creating_list(trans_parsed_sentence(parsed), 'PP')
+            word_list = creating_list(trans_parsed_sentence(parsed), 'SBAR')
         except ValueError as e:
             print("오류 뜨는 문장 : ")
             print(word_list)
@@ -147,7 +147,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open("D:/data/json_data/removed_data/amazon/removed_PP_neg_100000.json", 'w') as outfile:
+with open("D:/data/json_data/removed_data/amazon/removed_SBAR_neg_100000.json", 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

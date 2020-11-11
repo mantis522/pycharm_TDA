@@ -31,3 +31,40 @@ Testing Accuracy:  0.8937
 100,000개 Augmentation
 Testing Accuracy:  0.8882
 Testing Accuracy:  0.8909
+
+
+renew 랜덤 샘플링
+
+1,000개
+Testing Accuracy:  0.6779
+Testing Accuracy:  0.6716
+
+2,000개
+Testing Accuracy:  0.7322
+Testing Accuracy:  0.7273
+
+5,000개
+Testing Accuracy:  0.7905
+Testing Accuracy:  0.7789
+Testing Accuracy:  0.7751
+
+10,000
+Testing Accuracy:  0.7530
+Testing Accuracy:  0.7867
+Testing Accuracy:  0.8099
+Testing Accuracy:  0.7612
+
+25,000
+Testing Accuracy:  0.8316
+Testing Accuracy:  0.8176
+Testing Accuracy:  0.8117
+
+50,000
+Testing Accuracy:  0.8511
+Testing Accuracy:  0.8624
+
+100,000
+Testing Accuracy:  0.8817
+Testing Accuracy:  0.8715
+Testing Accuracy:  0.8786
+Testing Accuracy:  0.8847
