@@ -17,7 +17,7 @@ def making_parsed_tree(sentiment_code, file_name):
     parsed_sentence_first = []
 
     pcn = StanfordCoreNLP('http://localhost:9000')
-    df_amazon = pd.read_csv("D:/data/csv_file/amazon/amazon_100000.csv")
+    df_amazon = pd.read_csv(r"D:\data\csv_file\amazon_len_renew\amazon_100000_renew.csv")
 
     nlp = stanfordnlp.Pipeline(processors='tokenize', lang='en')
     text = df_amazon['review']

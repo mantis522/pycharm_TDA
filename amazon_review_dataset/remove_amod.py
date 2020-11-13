@@ -19,7 +19,7 @@ def vader_polarity(text):
     return 1 if score['pos'] > score['neg'] else 0
 
 
-with open("D:/data/json_data/TPE_Pattern/amazon/amazon_EX_100000_neg.json") as json_file:
+with open("D:/data/json_data/TPE_Pattern/amazon/amazon_EX_100000_pos.json") as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
@@ -86,7 +86,7 @@ for a in tqdm(index_num):
                 if word.dependency_relation == 'amod':
                     word_list.append(word.text)
 
-        if len(word_list) > 1:
+        if len(word_list) > 1 and len(word_list) < 13:
             first_sent_list = []
             # print(str(a + 1) + " 번째 리스트의 " + str(b + 1) + " 번째 문장")
             score_original = vader_polarity(sentence)
@@ -120,7 +120,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open("D:/data/json_data/removed_data/amazon/removed_amod_neg_100000.json", 'w') as outfile:
+with open("D:/data/json_data/removed_data/amazon/removed_amod_pos_100000.json", 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

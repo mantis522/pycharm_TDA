@@ -11,8 +11,8 @@ from tensorflow.keras.layers import Dense, Flatten, LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing import sequence
 
-train_dir = "D:/data/csv_file/amazon/amazon_100000.csv"
-test_dir = "D:/data/csv_file/amazon/amazon_test.csv"
+train_dir = "D:/data/csv_file/amazon_len_renew/amazon_100000_renew.csv"
+test_dir = "D:/data/csv_file/amazon_len_renew/amazon_test.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 
 removed_amod_neg = "D:/data/json_data/removed_data/amazon/100000/removed_amod_neg_100000.json"
