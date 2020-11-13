@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Embedding
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.preprocessing import sequence
+from tensorflow.keras.preprocessing import sequence
 
 train_dir = "D:/data/csv_file/amazon_len_renew/amazon_100000_renew.csv"
 test_dir = "D:/data/csv_file/amazon_len_renew/amazon_test.csv"
@@ -21,6 +21,17 @@ removed_PP_neg = "D:/data/json_data/removed_data/amazon/100000/removed_PP_neg_10
 removed_PP_pos = "D:/data/json_data/removed_data/amazon/100000/removed_PP_pos_100000.json"
 removed_SBAR_neg = "D:/data/json_data/removed_data/amazon/100000/removed_SBAR_neg_100000.json"
 removed_SBAR_pos = "D:/data/json_data/removed_data/amazon/100000/removed_SBAR_pos_100000.json"
+
+home_train_dir = r"D:\ruin\data\csv_file\amazon_len_renew\amazon_100000_renew.csv"
+home_test_dir = r"D:\ruin\data\csv_file\amazon_len_renew\amazon_test.csv"
+home_glove = r"D:\ruin\data\glove.6B\glove.6B.100d.txt"
+
+home_removed_amod_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_amod_neg_100000.json"
+home_removed_amod_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_amod_pos_100000.json"
+home_removed_PP_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_PP_neg_100000.json"
+home_removed_PP_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_PP_pos_100000.json"
+home_removed_SBAR_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_SBAR_neg_100000.json"
+home_removed_SBAR_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_SBAR_pos_100000.json"
 
 def making_df(file_directory, label):
     with open(file_directory) as json_file:
@@ -40,15 +51,15 @@ def making_df(file_directory, label):
 
     return df
 
-removed_amod_pos = making_df(removed_amod_pos, 1)
-removed_amod_neg = making_df(removed_amod_neg, 0)
-removed_PP_pos = making_df(removed_PP_pos, 1)
-removed_PP_neg = making_df(removed_PP_neg, 0)
-removed_SBAR_neg = making_df(removed_SBAR_neg, 0)
-removed_SBAR_pos = making_df(removed_SBAR_pos, 1)
+removed_amod_pos = making_df(home_removed_amod_pos, 1)
+removed_amod_neg = making_df(home_removed_amod_neg, 0)
+removed_PP_pos = making_df(home_removed_PP_pos, 1)
+removed_PP_neg = making_df(home_removed_PP_neg, 0)
+removed_SBAR_neg = making_df(home_removed_SBAR_neg, 0)
+removed_SBAR_pos = making_df(home_removed_SBAR_pos, 1)
 
-original_train_df = pd.read_csv(train_dir)
-original_test_df = pd.read_csv(test_dir)
+original_train_df = pd.read_csv(home_train_dir)
+original_test_df = pd.read_csv(home_test_dir)
 
 original_test_df, original_val_df = train_test_split(original_test_df, test_size=0.4, random_state=0)
 
@@ -101,7 +112,7 @@ print('X_val size: ', x_val.shape)
 print('y_val size: ', y_val.shape)
 
 embeddings_index = {}
-f = open(glove_100_dir, encoding='utf-8')
+f = open(home_glove, encoding='utf-8')
 for line in f:
     values = line.split()
     word = values[0]
