@@ -4,16 +4,15 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers import Embedding, Dropout, Dense, Flatten, LSTM
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import backend as K
 from tensorflow.keras.preprocessing import sequence
 import time
+import tensorflow as tf
 
-## 왜 새로 만들었냐면 기존 random sampling 파일은 너무 문장 길이가 짧아서 제대로 추출이 안됨.
-## 그래서 새로 만들었는데 원래 코드하고 호환되는지 확인하기 귀찮아서 renew 코드 새로 만들었다.
+## 아직 안 돌아감
 
 start_time = time.time()
 K.clear_session()
@@ -35,6 +34,7 @@ t.fit_on_texts(x)
 
 vocab_size = len(t.word_index) + 1
 sequences = t.texts_to_sequences(x)
+
 
 def max_text():
     for i in range(1, len(sequences)):
@@ -66,13 +66,6 @@ x_val = sequence.pad_sequences(x_val, maxlen=maxlen)
 y_val = original_val_df['label'].values
 y_val = to_categorical(np.asarray(y_val))
 
-print('X_train size:', x_train.shape)
-print('y_train size:', y_train.shape)
-print('X_test size:', x_test.shape)
-print('y_test size:', y_test.shape)
-print('X_val size: ', x_val.shape)
-print('y_val size: ', y_val.shape)
-
 embeddings_index = {}
 f = open(glove_100_dir, encoding='utf-8')
 for line in f:
@@ -81,36 +74,38 @@ for line in f:
     coefs = np.asarray(values[1:], dtype='float32')
     embeddings_index[word] = coefs
 f.close()
-print('Loaded %s word vectors.' % len(embeddings_index))
 
-embedding_matrix = np.zeros((vocab_size, 100))
+model_name = 'amazon_classifier_en'
+batch_size = 64
+num_epochs = 10
+max_len = max_text()
 
-# fill in matrix
-for word, i in t.word_index.items():  # dictionary
-    embedding_vector = embeddings_index.get(word) # gets embedded vector of word from GloVe
-    if embedding_vector is not None:
-        # add to matrix
-        embedding_matrix[i] = embedding_vector # each row of matrix
+kargs = {
+    'model_name': model_name,
+    'vocab_size': vocab_size,
+    'embedding_dimension': 100,
+    'dropout_rate':0.2,
+    'lstm_dimension':128,
+    'output_dimension':2,
+}
 
-embedding_layer = Embedding(input_dim=vocab_size, output_dim=100, weights=[embedding_matrix],
-                           input_length = text_num, trainable=False)
+class amazonClassifier(tf.keras.Model):
+    def __init__(self, **kargs):
+        super(amazonClassifier, self).__init__(name=kargs['model_name'])
+        self.embedding = Embedding(input_dim=kargs['vocab_size'], output_dim=kargs['embedding_dimension'])
+        self.lstm_layer = LSTM(kargs['lstm_dimension'], return_sequences=True)
+        self.dropout = Dropout(kargs['dropout_rate'])
+        self.fc1 = Dense(units=kargs['output_dimension'], activation=tf.keras.activations.softmax)
 
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
-mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
+    def call(self, x):
+        x = self.embedding(x)
+        x = self.dropout(x)
+        x = self.lstm_layer(x)
+        x = self.dropout(x)
+        x = self.fc1(x)
 
-model = Sequential()
-model.add(embedding_layer)
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(2, activation='softmax'))
+        return x
+
+model = amazonClassifier(**kargs)
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.summary()
-
-hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=100, batch_size=64, verbose=1, callbacks=[es, mc])
-
-print("Accuracy...")
-loss, accuracy = model.evaluate(x_train, y_train, verbose=1)
-print("Training Accuracy: {:.4f}".format(accuracy))
-loss, accuracy = model.evaluate(x_test, y_test, verbose=1)
-print("Testing Accuracy:  {:.4f}".format(accuracy))
-
-print("--- %s seconds ---" % (time.time() - start_time))

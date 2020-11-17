@@ -13,11 +13,11 @@ from tensorflow.keras.layers import Dense, Flatten, LSTM, GRU, BatchNormalizatio
 from tensorflow.keras import preprocessing
 from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.preprocessing import sequence
+from tensorflow.keras.preprocessing import sequence
 import math
 from matplotlib import pyplot as plt
 
-train_dir = "D:/data/csv_file/amazon/amazon_1000.csv"
+train_dir = "D:/data/csv_file/amazon/amazon_10000.csv"
 test_dir = "D:/data/csv_file/amazon/amazon_review_dataset.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 

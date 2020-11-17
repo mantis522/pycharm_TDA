@@ -4,16 +4,14 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.layers import Embedding
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, LSTM
+from tensorflow.keras.layers import Dense, Flatten, LSTM, Bidirectional, Embedding, Concatenate, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import backend as K
+from tensorflow.keras import Input, Model
+import tensorflow as tf
 from tensorflow.keras.preprocessing import sequence
 import time
-
-## 왜 새로 만들었냐면 기존 random sampling 파일은 너무 문장 길이가 짧아서 제대로 추출이 안됨.
-## 그래서 새로 만들었는데 원래 코드하고 호환되는지 확인하기 귀찮아서 renew 코드 새로 만들었다.
 
 start_time = time.time()
 K.clear_session()
@@ -66,12 +64,21 @@ x_val = sequence.pad_sequences(x_val, maxlen=maxlen)
 y_val = original_val_df['label'].values
 y_val = to_categorical(np.asarray(y_val))
 
-print('X_train size:', x_train.shape)
-print('y_train size:', y_train.shape)
-print('X_test size:', x_test.shape)
-print('y_test size:', y_test.shape)
-print('X_val size: ', x_val.shape)
-print('y_val size: ', y_val.shape)
+class BahdanauAttention(tf.keras.Model):
+    def __init__(self, units):
+        super(BahdanauAttention, self).__init__()
+        self.W1 = Dense(units)
+        self.W2 = Dense(units)
+        self.V = Dense(1)
+
+    def call(self, values, query):
+        hidden_with_time_axis = tf.expand_dims(query, 1)
+        score = self.V(tf.nn.tanh(self.W1(values) + self.W2(hidden_with_time_axis)))
+        attention_weights = tf.nn.softmax(score, axis=1)
+        context_vector = attention_weights * values
+        context_vector = tf.reduce_sum(context_vector, axis=1)
+
+        return context_vector, attention_weights
 
 embeddings_index = {}
 f = open(glove_100_dir, encoding='utf-8')
@@ -81,35 +88,40 @@ for line in f:
     coefs = np.asarray(values[1:], dtype='float32')
     embeddings_index[word] = coefs
 f.close()
-print('Loaded %s word vectors.' % len(embeddings_index))
 
 embedding_matrix = np.zeros((vocab_size, 100))
-
-# fill in matrix
 for word, i in t.word_index.items():  # dictionary
     embedding_vector = embeddings_index.get(word) # gets embedded vector of word from GloVe
     if embedding_vector is not None:
         # add to matrix
         embedding_matrix[i] = embedding_vector # each row of matrix
 
-embedding_layer = Embedding(input_dim=vocab_size, output_dim=100, weights=[embedding_matrix],
-                           input_length = text_num, trainable=False)
+sequence_input = Input(shape=(maxlen, ), dtype='int32')
+embedding_sequences = Embedding(input_dim=vocab_size, output_dim=100, weights=[embedding_matrix],
+                        input_length = text_num, trainable=False)(sequence_input)
+#
+lstm = LSTM(128, dropout=0.2, recurrent_dropout=0.2, return_sequences=True)(embedding_sequences)
+lstm, forward_h, forward_c, backward_h, backward_c = Bidirectional\
+    (LSTM(128, dropout=0.2, return_sequences=True, return_state=True))(lstm)
+
+state_h = Concatenate()([forward_h, backward_h]) # 은닉 상태
+state_c = Concatenate()([forward_c, backward_c]) # 셀 상태
+
+attention = BahdanauAttention(128) # 가중치 크기 정의
+context_vector, attention_weights = attention(lstm, state_h)
+
+dense1 = Dense(20, activation="relu")(context_vector)
+dropout = Dropout(0.2)(dense1)
+output = Dense(2, activation="softmax")(dropout)
+model = Model(inputs=sequence_input, outputs=output)
 
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=4)
 mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
 
-model = Sequential()
-model.add(embedding_layer)
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(2, activation='softmax'))
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.summary()
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=100, batch_size=64, verbose=1, callbacks=[es, mc])
+history = model.fit(x_train, y_train, epochs=30, batch_size=64, validation_data=(x_val, y_val), verbose=1, callbacks=[es, mc])
 
-print("Accuracy...")
-loss, accuracy = model.evaluate(x_train, y_train, verbose=1)
-print("Training Accuracy: {:.4f}".format(accuracy))
 loss, accuracy = model.evaluate(x_test, y_test, verbose=1)
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 

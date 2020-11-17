@@ -18,7 +18,7 @@ def vader_polarity(text):
     return 1 if score['pos'] > score['neg'] else 0
 
 
-with open("D:/data/json_data/TPE_Pattern/amazon/amazon_EX_100000_neg.json") as json_file:
+with open("D:/data/json_data/TPE_Pattern/amazon/amazon_EX_50000_neg.json") as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
@@ -69,7 +69,7 @@ index_num = list(set(index_num))
 sent_list = []
 # count = 0
 
-for a in index_num:
+for a in tqdm(index_num):
     data = splited_sentence[a]
 
     for b in range(len(data)):
@@ -80,18 +80,18 @@ for a in index_num:
         sentence = splited_sentence[a][b]
         parsed = parsed_sentence[a][b]
         try:
-            word_list = creating_list(trans_parsed_sentence(parsed), 'PP')
+            word_list = creating_list(trans_parsed_sentence(parsed), 'SBAR')
         except ValueError as e:
-            print("오류 뜨는 문장 : ")
-            print(word_list)
+            # print("오류 뜨는 문장 : ")
+            # print(word_list)
             pass
 
-        if len(word_list) > 1 and len(word_list) < 13:
+        if len(word_list) > 1 and len(word_list) < 15:
         # if len(word_list) > 1:
             first_sent_list = []
             print(word_list)
             print(str(a + 1) + " 번째 리스트의 " + str(b + 1) + " 번째 문장")
-            # print("원래 문장 : " + sentence)
+            print("원래 문장 : " + sentence)
             score_original = vader_polarity(sentence)
 
             # print(word_list)
@@ -105,10 +105,10 @@ for a in index_num:
                     for d in t2l:
                         if len(t2l) == 1:
                             under_temp = sentence
-                            # print("삭제할 구들 : " + about_symbol(d))
+                            print("삭제할 구들 : " + about_symbol(d))
                             under_temp = under_temp.replace(about_symbol(d), "")
                             under_temp = " ".join(under_temp.split())
-                            # print("삭제 이후 문장 : " + under_temp)
+                            print("삭제 이후 문장 : " + under_temp)
                             score_remove = vader_polarity(under_temp)
                             if (score_original == score_remove):
                                 result_sentence = ' '.join(list1) + " " + under_temp + " " + ' '.join(list2)
@@ -139,6 +139,53 @@ for a in index_num:
             # #
             sent_list.append(first_sent_list)
 
+        elif len(word_list) > 15:
+            word_list = word_list[:15]
+            second_sent_list = []
+            print(word_list)
+            print(str(a + 1) + " 번째 리스트의 " + str(b + 1) + " 번째 문장")
+            print("원래 문장 : " + sentence)
+            score_original = vader_polarity(sentence)
+
+            print(word_list)
+
+            for c in range(len(word_list)):
+                number = list(combinations(word_list, c + 1))
+                for word_tuple in range(len(number)):
+                    t2l = list(number[word_tuple])
+                    # print(t2l)
+                    up_temp = sentence
+                    for d in t2l:
+                        if len(t2l) == 1:
+                            under_temp = sentence
+                            print("삭제할 구들 : " + about_symbol(d))
+                            under_temp = under_temp.replace(about_symbol(d), "")
+                            under_temp = " ".join(under_temp.split())
+                            print("삭제 이후 문장 : " + under_temp)
+                            score_remove = vader_polarity(under_temp)
+                            if (score_original == score_remove):
+                                result_sentence = ' '.join(list1) + " " + under_temp + " " + ' '.join(list2)
+                                # print("해당 문장에 대해서만 감성분석 결과값 : " + str(vader_polarity(result)))
+                                second_sent_list.append(result_sentence)
+                        else:
+                            test_list = []
+                            # print("삭제할 구들 : " + about_symbol(d))
+                            up_temp = up_temp.replace(about_symbol(d), "")
+                            up_temp = " ".join(up_temp.split())
+                            score_remove = vader_polarity(up_temp)
+                            # print("두 개 이상 삭제되는 문장 : " + up_temp)
+                            ### 리스트로 넣되, 중복은 파기하는 방식으로 해야되나
+
+                            if (score_original == score_remove):
+                                result_sentence = ' '.join(list1) + " " + up_temp + " " + ' '.join(list2)
+                                # print("해당 문장에 대해서만 감성분석 결과값 : " + str(vader_polarity(result)))
+                                second_sent_list.append(result_sentence)
+
+                    second_sent_list = list(set(second_sent_list))
+            print('----------------------')
+            # #
+            sent_list.append(second_sent_list)
+
     # if count % 10 == 0:
     #     print(count)
 # print(sent_list)
@@ -147,7 +194,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open("D:/data/json_data/removed_data/amazon/removed_PP_neg_100000.json", 'w') as outfile:
+with open("D:/data/json_data/removed_data/amazon/removed_SBAR_neg_50000.json", 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
