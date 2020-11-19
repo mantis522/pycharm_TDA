@@ -18,7 +18,7 @@ def vader_polarity(text):
     return 1 if score['pos'] > score['neg'] else 0
 
 
-with open("D:/data/json_data/TPE_Pattern/amazon/amazon_EX_50000_neg.json") as json_file:
+with open("D:/data/json_data/TPE_Pattern/amazon/amazon_EX_5000_neg.json") as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
@@ -194,7 +194,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open("D:/data/json_data/removed_data/amazon/removed_SBAR_neg_50000.json", 'w') as outfile:
+with open("D:/data/json_data/removed_data/amazon/removed_SBAR_neg_5000.json", 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

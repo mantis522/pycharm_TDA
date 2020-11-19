@@ -1,17 +1,12 @@
 import json
 import pandas as pd
-from keras.models import Sequential
-import keras
-from keras.layers import Dense, LSTM, Embedding, Dropout, Flatten, SpatialDropout1D, Input
-from keras.models import Model
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing import sequence
-from keras import optimizers
-from keras.preprocessing.sequence import pad_sequences
-import numpy as np
-import time
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM, Embedding
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing import sequence
 
+import time
 
 start_time = time.time()
 

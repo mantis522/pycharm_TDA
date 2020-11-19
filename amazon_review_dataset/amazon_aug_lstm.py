@@ -11,28 +11,28 @@ from tensorflow.keras.layers import Dense, Flatten, LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.preprocessing import sequence
 
-train_dir = "D:/data/csv_file/amazon_len_renew/amazon_50000_renew.csv"
+train_dir = "D:/data/csv_file/amazon_len_renew/amazon_5000_renew.csv"
 test_dir = "D:/data/csv_file/amazon_len_renew/amazon_test.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 
-removed_amod_neg = "D:/data/json_data/removed_data/amazon/50000/removed_amod_neg_50000.json"
-removed_amod_pos = "D:/data/json_data/removed_data/amazon/100000/removed_amod_pos_50000.json"
-removed_PP_neg = "D:/data/json_data/removed_data/amazon/50000/removed_PP_neg_50000.json"
-removed_PP_pos = "D:/data/json_data/removed_data/amazon/50000/removed_PP_pos_50000.json"
-removed_SBAR_neg = "D:/data/json_data/removed_data/amazon/50000/removed_SBAR_neg_50000.json"
-removed_SBAR_pos = "D:/data/json_data/removed_data/amazon/50000/removed_SBAR_pos_50000.json"
+removed_amod_neg = "D:/data/json_data/removed_data/amazon/5000/removed_amod_neg_5000.json"
+removed_amod_pos = "D:/data/json_data/removed_data/amazon/5000/removed_amod_pos_5000.json"
+removed_PP_neg = "D:/data/json_data/removed_data/amazon/5000/removed_PP_neg_5000.json"
+removed_PP_pos = "D:/data/json_data/removed_data/amazon/5000/removed_PP_pos_5000.json"
+removed_SBAR_neg = "D:/data/json_data/removed_data/amazon/5000/removed_SBAR_neg_5000.json"
+removed_SBAR_pos = "D:/data/json_data/removed_data/amazon/5000/removed_SBAR_pos_5000.json"
 
-home_train_dir = r"D:\ruin\data\csv_file\amazon_len_renew\amazon_100000_renew.csv"
-home_test_dir = r"D:\ruin\data\csv_file\amazon_len_renew\amazon_test.csv"
-home_glove = r"D:\ruin\data\glove.6B\glove.6B.100d.txt"
-
-
-home_removed_amod_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_amod_neg_100000.json"
-home_removed_amod_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_amod_pos_100000.json"
-home_removed_PP_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_PP_neg_100000.json"
-home_removed_PP_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_PP_pos_100000.json"
-home_removed_SBAR_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_SBAR_neg_100000.json"
-home_removed_SBAR_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_SBAR_pos_100000.json"
+# home_train_dir = r"D:\ruin\data\csv_file\amazon_len_renew\amazon_100000_renew.csv"
+# home_test_dir = r"D:\ruin\data\csv_file\amazon_len_renew\amazon_test.csv"
+# home_glove = r"D:\ruin\data\glove.6B\glove.6B.100d.txt"
+#
+#
+# home_removed_amod_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_amod_neg_100000.json"
+# home_removed_amod_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_amod_pos_100000.json"
+# home_removed_PP_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_PP_neg_100000.json"
+# home_removed_PP_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_PP_pos_100000.json"
+# home_removed_SBAR_neg = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_SBAR_neg_100000.json"
+# home_removed_SBAR_pos = r"D:\ruin\data\json_data\removed_data\amazon\100000\removed_SBAR_pos_100000.json"
 
 def making_df(file_directory, label):
     with open(file_directory) as json_file:
@@ -67,8 +67,9 @@ original_test_df, original_val_df = train_test_split(original_test_df, test_size
 x = original_train_df['review']
 y = original_train_df['label']
 
-concat_train_df = pd.concat([original_train_df, removed_PP_neg, removed_PP_pos, removed_SBAR_pos, removed_SBAR_neg, removed_amod_pos, removed_amod_neg]).reset_index(drop=True)
-
+# concat_train_df = pd.concat([original_train_df, removed_PP_neg, removed_PP_pos, removed_SBAR_pos, removed_SBAR_neg, removed_amod_pos, removed_amod_neg]).reset_index(drop=True)
+concat_train_df = pd.concat([original_train_df,removed_SBAR_pos, removed_SBAR_neg, removed_amod_pos, removed_amod_neg]).reset_index(drop=True)
+#
 t = Tokenizer()
 t.fit_on_texts(x)
 

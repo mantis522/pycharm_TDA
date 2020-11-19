@@ -1,15 +1,10 @@
 import json
 import pandas as pd
-from keras.models import Sequential
-import keras
-from keras.layers import Dense, LSTM, Embedding, Dropout, Flatten, SpatialDropout1D, Input
-from keras.models import Model
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing import sequence
-from keras import optimizers
-from keras.preprocessing.sequence import pad_sequences
-import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM, Embedding
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing import sequence
 import time
 from matplotlib import pyplot as plt
 
@@ -23,8 +18,8 @@ RSBARN_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SB
 RSBARP_directory = "C:/Users/ruin/Desktop/data/json_data/removed_data/removed_SBAR_pos.json"
 origin_directory = "C:/Users/ruin/Desktop/data/json_data/train_data_full.json"
 test_directory = "C:/Users/ruin/Desktop/data/json_data/test_data_full.json"
-RAN = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAN.json"
-RAP = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAP.json"
+# RAN = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAN.json"
+# RAP = "C:/Users/ruin/Desktop/data/json_data/removed_data/RAP.json"
 ## RAN의 All은 TPE가 아니라 모든 데이터에 대해 삭제하는 걸 의미. 딱히 신경 쓸 필요 X
 
 
@@ -99,15 +94,12 @@ removed_pos_PP = making_df(RRPP_directory, 1)
 removed_neg_JJ = making_df(RN_directory, 0)
 removed_pos_JJ = making_df(RP_directory, 1)
 
-Lab_RAN = making_df(RAN, 0)
-Lab_RAP = making_df(RAP, 1)
-
 test_df = making_test_df(test_directory)
 test_df = test_df.sample(frac=1).reset_index(drop=True)
 
 origin_train_df = making_origin_df(origin_directory)
 
-removed_train_df = pd.concat([Lab_RAN, Lab_RAP])
+removed_train_df = pd.concat([removed_neg_SBAR, removed_pos_SBAR])
 removed_train_df = removed_train_df.reset_index(drop=True)
 
 concat_train_df = pd.concat([removed_train_df, origin_train_df])
@@ -163,18 +155,18 @@ score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
 print('Test score : ', score)
 print('Test accuracy : ', acc)
 
-fig, loss_ax = plt.subplots()
-acc_ax = loss_ax.twinx()
-loss_ax.plot(hist.history['loss'], 'y', label='train loss')
-loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')
-acc_ax.plot(hist.history['accuracy'], 'b', label='train acc')
-acc_ax.plot(hist.history['val_accuracy'], 'g', label='val acc')
-loss_ax.set_xlabel('epoch')
-loss_ax.set_ylabel('loss')
-acc_ax.set_ylabel('accuracy')
-loss_ax.legend(loc='upper left')
-acc_ax.legend(loc='lower left')
-plt.show()
+# fig, loss_ax = plt.subplots()
+# acc_ax = loss_ax.twinx()
+# loss_ax.plot(hist.history['loss'], 'y', label='train loss')
+# loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')
+# acc_ax.plot(hist.history['accuracy'], 'b', label='train acc')
+# acc_ax.plot(hist.history['val_accuracy'], 'g', label='val acc')
+# loss_ax.set_xlabel('epoch')
+# loss_ax.set_ylabel('loss')
+# acc_ax.set_ylabel('accuracy')
+# loss_ax.legend(loc='upper left')
+# acc_ax.legend(loc='lower left')
+# plt.show()
 
 # using svg visual model
 # from IPython.display import SVG

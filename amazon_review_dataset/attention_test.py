@@ -4,14 +4,15 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, LSTM, Bidirectional, Embedding, Concatenate, Dropout
+from tensorflow.keras.layers import Dense, LSTM, Bidirectional, Embedding, Concatenate, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import backend as K
 from tensorflow.keras import Input, Model
 import tensorflow as tf
 from tensorflow.keras.preprocessing import sequence
 import time
+
+## 돌아가는거 확인. 그런데 GPU memory가 낮으면 중간에 에러뜸. 12GB 서버에서는 제대로 돌아감. 8GB에서는 오락가락 하는 듯
 
 start_time = time.time()
 K.clear_session()
