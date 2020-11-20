@@ -4,7 +4,7 @@ from nltk.tokenize import word_tokenize
 ## 아마존 데이터셋 평균 단어수가 85개 밖에 안되서 185개 이상 가진 데이터만 추출하는 코드
 ## 참고로 IMDB 데이터셋 평균 단어수는 256개
 
-data_train = pd.read_csv("D:/data/amazon_review_polarity_csv/train.csv", names=['label', 'title', 'review'])
+data_train = pd.read_csv("D:/data/amazon_review_polarity_csv/test.csv", names=['label', 'title', 'review'])
 data_train.loc[data_train["label"] == 1, "label"] = 0
 data_train.loc[data_train['label'] == 2, "label"] = 1
 data_train.drop(['title'], axis='columns', inplace=True)
@@ -42,9 +42,9 @@ def making_df(label, word_len, max_count):
     print("카운트 끝")
     return df
 
-neg_df = making_df(0, 185, 1000)
-pos_df = making_df(1, 185, 1000)
+neg_df = making_df(0, 170, 12500)
+pos_df = making_df(1, 170, 12500)
 
 concat_train_df = pd.concat([neg_df, pos_df]).reset_index(drop=True)
 
-concat_train_df.to_csv(r"D:\data\csv_file\amazon_len_renew\amazon_2000_renew.csv", index=False)
+concat_train_df.to_csv(r"D:\data\csv_file\amazon_len_renew\test_renew.csv", index=False)

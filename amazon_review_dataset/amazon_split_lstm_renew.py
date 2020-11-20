@@ -18,8 +18,8 @@ import time
 start_time = time.time()
 K.clear_session()
 
-train_dir = r"D:\data\csv_file\amazon_len_renew\amazon_5000_renew.csv"
-test_dir = r"D:\data\csv_file\amazon_len_renew\amazon_test.csv"
+train_dir = r"D:\data\csv_file\amazon_len_renew\amazon_10000_renew.csv"
+test_dir = r"D:\data\csv_file\amazon_len_renew\test_renew.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 
 original_train_df = pd.read_csv(train_dir)
