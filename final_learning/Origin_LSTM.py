@@ -5,7 +5,6 @@ from tensorflow.keras.layers import Dense, LSTM, Embedding
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing import sequence
-
 import time
 
 start_time = time.time()
@@ -92,22 +91,25 @@ print(x_val.shape)
 print(y_train)
 print(y_train.shape)
 
-print('Build model...')
-model = Sequential()
-model.add(Embedding(vocab_size, 128))
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(1, activation='sigmoid'))
+print(x_train.dtype)
+print(y_train.dtype)
 
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=2, patience=4)
-mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, save_best_only=True)
-
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-print('Train...')
-hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
-score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
-print('Test score : ', score)
-print('Test accuracy : ', acc)
+# print('Build model...')
+# model = Sequential()
+# model.add(Embedding(vocab_size, 128))
+# model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
+# model.add(Dense(1, activation='sigmoid'))
+#
+# es = EarlyStopping(monitor='val_loss', mode='min', verbose=2, patience=4)
+# mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=2, save_best_only=True)
+#
+# model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+#
+# print('Train...')
+# hist = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10, batch_size=64, verbose=1, callbacks=[es, mc])
+# score, acc = model.evaluate(x_test, y_test, batch_size=64, verbose=0)
+# print('Test score : ', score)
+# print('Test accuracy : ', acc)
 #
 # # fig, loss_ax = plt.subplots()
 # # acc_ax = loss_ax.twinx()
