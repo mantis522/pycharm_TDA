@@ -13,13 +13,16 @@ start = time.time()
 analyser = SentimentIntensityAnalyzer()
 nlp = stanfordnlp.Pipeline(processors='tokenize,pos,depparse')
 
+file_in = r"D:\data\json_data\TPE_Pattern\popcorn_imdb\ratio\popcorn_TPE_25_neg.json"
+file_out = r"D:\data\json_data\removed_data\popcorn\ratio\removed_popcorn_25_amod_neg.json"
+
 def vader_polarity(text):
     """ Transform the output to a binary 0/1 result """
     score = analyser.polarity_scores(text)
     return 1 if score['pos'] > score['neg'] else 0
 
 
-with open(r"D:\data\json_data\TPE_Pattern\popcorn_imdb\popcorn_imdb_EX_pos.json") as json_file:
+with open(file_in) as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
@@ -145,7 +148,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open(r"D:\data\json_data\removed_data\popcorn\removed_amod_pos.json", 'w') as outfile:
+with open(file_out, 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

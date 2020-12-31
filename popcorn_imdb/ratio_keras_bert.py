@@ -30,19 +30,56 @@ from keras_bert import Tokenizer
 from keras_bert import get_custom_objects
 from keras_bert import load_trained_model_from_checkpoint
 
-train_dir = r"D:\data\word2vec-nlp-tutorial\train_20000.csv"
-test_dir = r"D:\data\word2vec-nlp-tutorial\test.csv"
 
-original_train_df = pd.read_csv(train_dir, names=['id', 'label', 'review'])
+original_train_neg_df = pd.read_csv(r"D:\data\csv_file\popcorn\popcorn_1_neg.csv")
+original_train_pos_df = pd.read_csv(r"D:\data\csv_file\popcorn\popcorn_1_pos.csv")
+
+original_concat_df = pd.concat([original_train_neg_df, original_train_pos_df]).reset_index(drop=True)
+del original_concat_df['Unnamed: 0']
+# del original_test_df['id']
+test_dir = r"D:\data\word2vec-nlp-tutorial\test.csv"
 original_test_df = pd.read_csv(test_dir, names=['id', 'label', 'review'])
-glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
-original_train_df = original_train_df.drop(original_train_df.index[0]).reset_index(drop=True)
 original_test_df = original_test_df.drop(original_test_df.index[0]).reset_index(drop=True)
 del original_test_df['id']
-del original_train_df['id']
 
-SEQ_LEN = 250
-BATCH_SIZE = 10
+removed_amod_neg = r"D:\data\json_data\removed_data\popcorn\ratio\1\removed_popcorn_1_amod_neg.json"
+removed_amod_pos = r"D:\data\json_data\removed_data\popcorn\ratio\1\removed_popcorn_1_amod_pos.json"
+removed_PP_neg = r"D:\data\json_data\removed_data\popcorn\ratio\1\removed_popcorn_1_PP_neg.json"
+removed_PP_pos = r"D:\data\json_data\removed_data\popcorn\ratio\1\removed_popcorn_1_PP_pos.json"
+removed_SBAR_neg = r"D:\data\json_data\removed_data\popcorn\ratio\1\removed_popcorn_1_SBAR_neg.json"
+removed_SBAR_pos = r"D:\data\json_data\removed_data\popcorn\ratio\1\removed_popcorn_1_SBAR_pos.json"
+
+def making_df(file_directory, label):
+    with open(file_directory) as json_file:
+        json_data = json.load(json_file)
+
+    removed_sentence = json_data['removed_sentence']
+    removed_sentence = removed_sentence[0]
+    removed = []
+
+    for a in range(len(removed_sentence)):
+        for b in range(len(removed_sentence[a])):
+            removed.append(removed_sentence[a][b])
+
+    df = pd.DataFrame(removed)
+    df.columns = ['review']
+    df['label'] = label
+
+    return df
+
+removed_amod_pos = making_df(removed_amod_pos, 1)
+removed_amod_neg = making_df(removed_amod_neg, 0)
+removed_PP_pos = making_df(removed_PP_pos, 1)
+removed_PP_neg = making_df(removed_PP_neg, 0)
+removed_SBAR_neg = making_df(removed_SBAR_neg, 0)
+removed_SBAR_pos = making_df(removed_SBAR_pos, 1)
+
+concat_train_df = pd.concat([original_concat_df, removed_SBAR_neg, removed_SBAR_pos, removed_amod_neg, removed_amod_pos, removed_PP_neg, removed_PP_pos]).reset_index(drop=True)
+
+original_test_df, original_val_df = train_test_split(original_test_df, test_size=0.4, random_state=0)
+
+SEQ_LEN = 320
+BATCH_SIZE = 6
 EPOCHS = 20
 LR = 2e-5
 
@@ -59,10 +96,10 @@ with codecs.open(vocab_path, 'r', 'utf8') as reader:
 
 tokenizer = Tokenizer(token_dict)
 
-def load_train_data(path, dataframe):
+def load_train_data(dataframe):
     global tokenizer
     indices, labels = [], []
-    df = pd.read_csv(path)
+    df = dataframe
     df = df[['label', 'review']]
     # df['airline_sentiment'] = df['airline_sentiment'].replace('negative', 0)
     # df['airline_sentiment'] = df['airline_sentiment'].replace('neutral', 1)
@@ -106,7 +143,7 @@ def load_test_data(path):
 
     return [indices, np.zeros_like(indices)], np.array(labels)
 
-train_x, train_y = load_test_data(train_dir)
+train_x, train_y = load_train_data(concat_train_df)
 test_x, test_y = load_test_data(test_dir)
 
 val_x = [test_x[0][3000:], test_x[1][3000:]]

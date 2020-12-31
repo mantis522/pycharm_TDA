@@ -17,8 +17,11 @@ def vader_polarity(text):
     score = analyser.polarity_scores(text)
     return 1 if score['pos'] > score['neg'] else 0
 
+file_in = r"D:\data\json_data\TPE_Pattern\popcorn_imdb\ratio\popcorn_TPE_25_neg.json"
+file_out = r"D:\data\json_data\removed_data\popcorn\ratio\removed_popcorn_25_PP_neg.json"
+deleted_syntax = "PP"
 
-with open(r"D:\data\json_data\TPE_Pattern\popcorn_imdb\popcorn_imdb_EX_neg.json") as json_file:
+with open(file_in) as json_file:
     json_data = json.load(json_file)
 
     splited_sentence = json_data['splited_sentence']
@@ -80,7 +83,7 @@ for a in tqdm(index_num):
         sentence = splited_sentence[a][b]
         parsed = parsed_sentence[a][b]
         try:
-            word_list = creating_list(trans_parsed_sentence(parsed), 'PP')
+            word_list = creating_list(trans_parsed_sentence(parsed), deleted_syntax)
         except ValueError as e:
             # print("오류 뜨는 문장 : ")
             # print(word_list)
@@ -194,7 +197,7 @@ sent_json = {}
 sent_json['removed_sentence'] = []
 sent_json['removed_sentence'].append(sent_list)
 
-with open(r"D:\data\json_data\removed_data\popcorn\removed_PP_neg.json", 'w') as outfile:
+with open(file_out, 'w') as outfile:
     json.dump(sent_json, outfile, indent=4)
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

@@ -1,0 +1,57 @@
+ratio_acc
+
+LSTM
+1%
+Test accuracy :  0.57483333
+Test accuracy :  0.59933335
+
+5%
+Test accuracy :  0.75416666
+Test accuracy :  0.75
+
+10%
+Test accuracy :  0.7725
+Test accuracy :  0.7751667
+
+25%
+Test accuracy :  0.7826667
+Test accuracy :  0.79
+
+50%
+Test accuracy :  0.8153333
+Test accuracy :  0.78433335
+Test accuracy :  0.794
+
+100%
+Test accuracy :  0.8305
+Test accuracy :  0.8335
+
+LSTM - AUG
+
+1% - All 5773
+Test accuracy :  0.59716666
+Test accuracy :  0.6285
+
+PP 2615
+Test accuracy :  0.60833335
+Test accuracy :  0.59433335
+
+PP + SBAR 2915
+Test accuracy :  0.59316665
+Test accuracy :  0.58933336
+
+SBAR + amod 3357
+Test accuracy :  0.5793333
+Test accuracy :  0.63133335
+
+amod + PP 5473
+Test accuracy :  0.6162
+Test accuracy :  0.5836667
+
+amod 3057
+Test accuracy :  0.6048333
+Test accuracy :  0.64066666
+
+SBAR 499
+Test accuracy :  0.5605
+Test accuracy :  0.6093333
