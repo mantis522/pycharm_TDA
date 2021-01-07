@@ -6,19 +6,18 @@ Test accuracy :  0.57483333
 Test accuracy :  0.59933335
 
 5%
-Test accuracy :  0.75416666
-Test accuracy :  0.75
+Test accuracy :  0.6985
+Test accuracy :  0.7002
 
 10%
-Test accuracy :  0.7725
-Test accuracy :  0.7751667
+Test accuracy :  0.7525
+Test accuracy :  0.7551667
 
 25%
-Test accuracy :  0.7826667
-Test accuracy :  0.79
+Test accuracy :  0.7726667
+Test accuracy :  0.78
 
 50%
-Test accuracy :  0.8153333
 Test accuracy :  0.78433335
 Test accuracy :  0.794
 
@@ -55,3 +54,101 @@ Test accuracy :  0.64066666
 SBAR 499
 Test accuracy :  0.5605
 Test accuracy :  0.6093333
+
+5% All 37794
+Test accuracy : 0.7089
+Test accuracy : 0.7102
+
+SBAR + PP 10792
+Test accuracy :  0.7125
+Test accuracy :  0.6931667
+
+amod + SBAR 29233
+Test accuracy :  0.7008333
+Test accuracy :  0.7255
+
+PP + amod 36562
+Test accuracy :  0.6893333
+Test accuracy :  0.68416667
+
+PP 9560
+Test accuracy :  0.6946667
+Test accuracy :  0.7145
+
+amod 28001
+Test accuracy :  0.73
+Test accuracy :  0.6803333
+
+SBAR 2231
+Test accuracy :  0.6816667
+Test accuracy :  0.7075
+
+10% All 77,992
+Test accuracy :  0.71816665
+
+PP 18,250
+Test accuracy :  0.76666665
+
+PP + amod 75608
+Test accuracy :  0.73616666
+
+PP + SBAR 20634
+Test accuracy :  0.7701667
+Test accuracy :  0.76416665
+Test accuracy :  0.7675
+
+SBAR + amod 61741
+Test accuracy :  0.7353333
+Test accuracy :  0.7431667
+
+SBAR 4383
+Test accuracy :  0.772
+Test accuracy :  0.7565
+
+amod 59357
+Test accuracy :  0.74916667
+
+
+25% All 208644
+Test accuracy :  0.777
+
+amod 147999
+Test accuracy :  0.786
+
+PP 59484
+Test accuracy :  0.78683336
+
+PP SBAR 65645
+Test accuracy :  0.77
+
+SBAR 11161
+Test accuracy :  0.8006667
+Test accuracy :  0.786
+
+SBAR + amod 154160
+Test accuracy :  0.7636667
+
+PP amod 202483
+Test accuracy :  0.778112
+
+50% All 318459
+Test accuracy :  0.795
+
+PP 102909
+Test accuracy :  0.8006667
+
+PP SBAR 114860
+Test accuracy :  0.8025
+
+PP amod 306508
+Test accuracy :  0.788
+
+amod SBAR 225550
+Test accuracy :  0.78783333
+
+amod 213599
+Test accuracy :  0.7891
+Test accuracy :  0.796
+
+SBAR 21951
+Test accuracy :  0.8155
