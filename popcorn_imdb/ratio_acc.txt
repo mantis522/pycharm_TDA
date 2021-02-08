@@ -22,8 +22,8 @@ Test accuracy :  0.78433335
 Test accuracy :  0.794
 
 100%
-Test accuracy :  0.8305
-Test accuracy :  0.8335
+Test accuracy :  0.8105
+Test accuracy :  0.8135
 
 LSTM - AUG
 
@@ -131,6 +131,7 @@ Test accuracy :  0.7636667
 PP amod 202483
 Test accuracy :  0.778112
 
+
 50% All 318459
 Test accuracy :  0.795
 
@@ -152,3 +153,4 @@ Test accuracy :  0.796
 
 SBAR 21951
 Test accuracy :  0.8155
+Test accuracy :  0.7992

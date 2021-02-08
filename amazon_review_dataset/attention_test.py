@@ -17,7 +17,7 @@ import time
 start_time = time.time()
 K.clear_session()
 
-train_dir = r"D:\data\csv_file\amazon_len_renew\amazon_10000_renew.csv"
+train_dir = r"D:\data\csv_file\amazon_len_renew\amazon_1000_renew.csv"
 test_dir = r"D:\data\csv_file\amazon_len_renew\amazon_test.csv"
 glove_100_dir = "D:/data/glove.6B/glove.6B.100d.txt"
 
